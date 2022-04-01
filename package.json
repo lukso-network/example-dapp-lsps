@@ -7,11 +7,12 @@
     "preview": "vite preview --port 5050"
   },
   "dependencies": {
+    "browserify-zlib": "^0.2.0",
+    "erc725.js": "^0.5.7",
+    "stream-browserify": "^3.0.0",
     "vue": "^3.2.31",
     "vue-router": "^4.0.14",
-    "web3": "^1.7.1",
-    "browserify-zlib": "^0.2.0",
-    "stream-browserify": "^3.0.0"
+    "web3": "^1.7.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.2",

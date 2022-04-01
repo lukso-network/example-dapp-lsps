@@ -1,6 +1,4 @@
 <script setup>
-import Login from './pages/Login.vue'
-import TheWelcome from './pages/TheWelcome.vue'
 import Web3 from 'web3'
 
 // CONNECT web3.js to the "ethereum" provider

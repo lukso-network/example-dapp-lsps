@@ -1,7 +1,6 @@
 <script>
 export default {
-  // Properties returned from data() becomes reactive state
-  // and will be exposed on `this`.
+
   data() {
     return {
       isUnsupportedBrowser: true,

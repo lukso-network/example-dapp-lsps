@@ -5,7 +5,6 @@ import {
 
 import Login from "./pages/Login.vue";
 import Dashboard from "./pages/Dashboard.vue";
-import TheWelcome from "./pages/TheWelcome.vue";
 
 const history = createWebHistory();
 const routes = [
@@ -16,10 +15,6 @@ const routes = [
     {
         path: "/login",
         component: Login
-    },
-    {
-        path: "/costumers",
-        component: TheWelcome
     },
 ];
 const router = createRouter({
