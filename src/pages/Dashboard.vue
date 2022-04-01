@@ -19,9 +19,10 @@ export default {
       this.isUnsupportedBrowser = false
     }
 
-
     // CHECK if BROWSER EXTENSION is INSTALLED
-    // AND/OR Universal Profile is LOGGED IN (address is available)
+
+
+    // CHECK if Universal Profile is LOGGED IN (address is available)
     try {
       
       const accounts = await web3.eth.getAccounts()
@@ -35,7 +36,7 @@ export default {
         this.$router.push('/')
 
 
-    // IF web3.js couldn't connect it will throw Error: "Provider not set or invalid"
+    // IF web3.js couldn't connect it will throw Error: Provider not set or invalid
     // then and we ask the user to install the browser extension
     } catch(e) {
 
@@ -47,15 +48,12 @@ export default {
   },
 
   methods: {
-    // IF the user clicks the LOGIN BUTTON
     async login() {
 
       // Request an account
       const accounts = await web3.eth.requestAccounts()
 
-      // check if any number of accounts was returned
-      // IF go to the dashboard
-      if(accounts.length)
+      if(accounts.length >= 2)
         this.$router.push('/')
       else
         this.error = 'No account was selected!'
@@ -67,6 +65,9 @@ export default {
 
 
 <template>
+
+DASHBOARD
+
   <p class="note" v-if="isUnsupportedBrowser">
     This app can only be used with <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> at this point
   </p>

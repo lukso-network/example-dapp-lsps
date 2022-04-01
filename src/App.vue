@@ -15,13 +15,18 @@ export default {
   // CHECK if the browser has a an extension, AND is authenticated (extension provided an address)
   // when the app is loaded
   async mounted() {
-    console.log(this.web4)
 
     // TRY getting the UniversalProfile address
     try {
+      const accounts = await web3.eth.getAccounts()
+
+      if(!accounts.length) {
+        throw Error('No accounts given: ' + accounts)
+      }
+
       console.log(
        "Authenticated account:\n", 
-        await web3.eth.getAccounts()
+       accounts
       )
     
     // OTHERWISE go to the login page, if no browser extension can be detected, or no accounts are exposed

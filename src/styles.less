@@ -2,3 +2,40 @@
     margin-top: 5em;
     margin-bottom: 5em;
 }
+
+.center {
+    display: block;
+    text-align: center;
+}
+
+.note, .warning {
+    &::before {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    background-color: white;
+    border: solid 1px white;
+    border-radius: 6px;
+    line-height: 18px;
+    overflow: hidden;
+    padding: 15px 20px;
+}
+
+.note {
+    &::before {
+        content: "📝";
+    }
+
+    background-color: #f0f7fb;
+    border-color: #3498db;
+}
+
+.warning {
+    &::before {
+        content: "⚠️";
+    }
+
+    background-color: #fbf5f0;
+    border-color: #db6334;
+}
