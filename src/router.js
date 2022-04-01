@@ -3,18 +3,22 @@ import {
     createRouter
 } from "vue-router";
 
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
+import Login from "./pages/Login.vue";
+import TheWelcome from "./pages/TheWelcome.vue";
 
 const history = createWebHistory();
 const routes = [
     {
-    path: "/",
-    component: HelloWorld
+        path: "/",
+        component: Login
     },
     {
-    path: "/costumers",
-    component: TheWelcome
+        path: "/login",
+        component: Login
+    },
+    {
+        path: "/costumers",
+        component: TheWelcome
     },
 ];
 const router = createRouter({

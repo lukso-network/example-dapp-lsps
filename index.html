@@ -15,6 +15,17 @@
     <!-- Milligram CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
 
+    <!-- FIX fow web3.js import -->
+    <script>window.global = window;</script>
+    <script type="module">
+        import process from "process";
+        import { Buffer } from "buffer";
+        import EventEmitter from "events";
+        
+        window.Buffer = Buffer;
+        window.process = process;
+        window.EventEmitter = EventEmitter;
+    </script>
   </head>
   <body>
     <div id="app"></div>
