@@ -33,10 +33,8 @@ export default {
 
 <template>
 
-  DASHBOARD
   <div class="center">
     <ProfileComponent />
   </div>
-
 
 </template>

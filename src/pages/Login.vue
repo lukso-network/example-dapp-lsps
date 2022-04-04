@@ -66,14 +66,25 @@ export default {
 
 
 <template>
-  <p class="note" v-if="isUnsupportedBrowser">
-    This app can only be used with <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> at this point
-  </p>
+
+  <div class="center">
+    <h2>
+      LUKSO Example dApp
+    </h2>
+    <h3>
+      Universal Profiles, Tokens (LSP7) and NFTs (LSP8)
+    </h3>
+    <br>
+  </div>
+
 
   <p class="warning" v-if="error">
     {{error}}
   </p>
 
+  <p class="note" v-if="isUnsupportedBrowser">
+    This app can only be used with <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> at this point
+  </p>
   <div class="login center" v-else>
 
     <!-- Ask the user to DOWNLOAD the BROWSER EXTENSION -->
@@ -97,14 +108,6 @@ export default {
 
     <!-- Ask the user to LOGIN, using the bowser extension -->
     <div v-else-if="requiresLogin">
-      <h2>
-        LUKSO Example dApp
-      </h2>
-      <h3>
-        Universal Profiles, Tokens (LSP7) and NFTs (LSP8)
-      </h3>
-
-      <br>
 
       <button @click="login">Login with your Universal Profile</button>
     </div>
