@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@erc725/erc725.js": "^0.10.0",
+    "@lukso/lsp-factory.js": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "ethereum-blockies-base64": "^1.0.2",
     "stream-browserify": "^3.0.0",

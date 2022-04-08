@@ -26,6 +26,10 @@ export default {
        "Authenticated account:\n", 
        accounts
       )
+
+      // GET the Universal Profile / Meta Mask address(es)
+      // set the account globally, to reduce getAccounts calls in components
+      window.account = accounts[0]
     
     // OTHERWISE go to the login page, if no browser extension can be detected, or no accounts are exposed
     } catch(e) {

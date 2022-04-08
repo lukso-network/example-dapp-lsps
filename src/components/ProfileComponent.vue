@@ -24,7 +24,8 @@ export default {
 
     const accounts = await web3.eth.getAccounts() // get the Universal Profile / Meta Mask address(es)
     const account = accounts[0] // set the first address as the Universal Profile address
-    
+
+
     // set the address, wether Universal Profile or EOA (MetaMask)
     this.profileData.address = account
 
@@ -33,7 +34,10 @@ export default {
 
 
     // INSTANTIATE erc725.js
-    const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, web3.currentProvider)
+    // window.web3 was set in App.vue
+    const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
+      ipfsGateway: 'https://ipfs.lukso.network/ipfs/'
+    })
     
     // GET the UNIVERSAL PROFILE DATA
     try {
@@ -52,7 +56,7 @@ export default {
 
       // change the IPFS path to a provider of our choice
       if(this.profileData.profileImage.url.substr('ipfs://' != -1))
-        this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', 'https://ipfs.lukso.network/ipfs/')
+        this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.config.ipfsGateway) // TODO remove config
 
     // IF it fails its likely NO Universal Profile, or a simple EOA (MetaMask)
     } catch(e) {

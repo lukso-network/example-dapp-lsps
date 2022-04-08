@@ -7,10 +7,6 @@ export default {
 
   data() {
     return {
-      isUnsupportedBrowser: true,
-      requiresBrowserExtension: false,
-      requiresLogin: false,
-      error: false
     }
   },
 
@@ -21,7 +17,7 @@ export default {
   },
 
   methods: {
-    async login() {
+    async createToken() {
 
 
     }
@@ -35,6 +31,9 @@ export default {
 
   <div class="center">
     <ProfileComponent />
+
+    <button @click="$router.push('/createToken')">Create a Token</button>
+    <button @click="$router.push('/createNFTCollection')">Create an NFT Collection</button>
   </div>
 
 </template>

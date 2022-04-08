@@ -8,6 +8,40 @@
     text-align: center;
 }
 
+.left {
+    display: block;
+    text-align: left;
+}
+
+button, .button {
+    margin: 10px 20px;
+}
+
+form {
+    margin: auto;
+    max-width: 500px;
+}
+
+.back {    
+    position: absolute;
+    display: block;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    text-align: center;
+    top: -60px;
+    left: 20px;
+    font-size: 30px;
+    font-weight: 100;
+    font-family: 'Courier New', Courier, monospace;
+    color:rgb(102, 101, 101);
+    background-color: rgb(226, 224, 224);
+
+    &:hover, &:focus {
+        background-color: rgb(200, 199, 199);
+    }
+}
+
 .note, .warning {
     &::before {
         font-size: 20px;
@@ -42,6 +76,8 @@
 
 .profile {
     height: 260px;
+    max-width: 400px;
+    margin: auto;
 
     .username {
         font-family: 'Courier New', Courier, monospace;
@@ -54,8 +90,8 @@
 
     .profileImage {
         position: relative;
-        width: 160px;
-        height: 160px;
+        width: 120px;
+        height: 120px;
         background-color: rgb(196, 196, 196);
         border-radius: 50%;
         margin: auto;
@@ -73,10 +109,10 @@
         }
         .image {
             position: absolute;
-            top: 10px;
-            margin: 0 10px;
-            width: 140px;
-            height: 140px;
+            top: 6px;
+            margin: 0 6px;
+            width: 108px;
+            height: 108px;
             background-color: rgba(196, 196, 196, 0.5);
         }
     }

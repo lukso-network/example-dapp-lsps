@@ -82,6 +82,7 @@ export default {
     {{error}}
   </p>
 
+
   <p class="note" v-if="isUnsupportedBrowser">
     This app can only be used with <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> at this point
   </p>

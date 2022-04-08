@@ -15,5 +15,8 @@ export default defineConfig({
       zlib: "browserify-zlib",
       util: 'util'
     }
+  },
+  optimizeDeps: {
+    exclude: ['electron-fetch'] // 'ipfs-http-client'
   }
 })
