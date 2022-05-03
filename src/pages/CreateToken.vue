@@ -1,5 +1,5 @@
 <script setup>
-// import { LSPFactory } from "@lukso/lsp-factory.js"
+import { LSPFactory } from "@lukso/lsp-factory.js"
 </script>
 
 <script>
@@ -7,7 +7,8 @@ export default {
 
   data() {
     return {
-
+      deploying: false,
+      deployEvents: []
     }
   },
 
@@ -20,14 +21,16 @@ export default {
   methods: {
     async onSubmit(e) {
 
+      const accounts = await web3.eth.getAccounts()
+
       const LSP4MetaData = {
         "LSP4Metadata": {
-            "description": "",
+            "description": "test text",
             "links": [],
             "icon": [  // multiple sizes of the same icon
                 {
-                    "width": Number,
-                    "height": Number,
+                    "width": 100,
+                    "height": 100,
                     "hashFunction": 'keccak256(bytes)',
                     "hash": 'string', // bytes32 hex string of the image hash
                     "url": 'string'
@@ -39,15 +42,33 @@ export default {
       }
 
 
-      // const factory = new LSPFactory('https://rpc.l14.lukso.network', {
-      //   name: 'name', 
-      //   symbol: 'NAM',
-      //   controllerAddress: '',
-      //   isNFT: false, // Token decimals set to 18
+      const factory = new LSPFactory(web3.currentProvider)
+      
+      console.log(accounts[0])
+
+      this.deploying = true
+      
+      factory.LSP7DigitalAsset.deploy({
+        name: 'name', 
+        symbol: 'NAM',
+        controllerAddress: accounts[0],
+        isNFT: false, // Token decimals set to 18
         // isNFT - boolean: Specify if the contract represent a fungible or a non-fungible token.
         // digitalAssetMetadata?: LSP4MetadataBeforeUpload | string: LSP4 Digital Asset Metadata to be attached to the smart contract. Can be an encoded hex string, ipfs url or metadata object as defined in LSP4DigitalAssetMetadata.uploadMetadata.
         // creators? string[]: Array of ERC725Account addresses that defines the creators of the digital asset. Used to set the LSP4Creators[] key on the contract.
-      // })
+      },{
+        deployReactive: true
+      }).subscribe({
+        next: (deploymentEvent) => {
+          console.log(deploymentEvent)
+          if(deploymentEvent.status === "COMPLETE")
+            this.deployEvents.push(deploymentEvent);
+        },
+        complete: () => {
+          this.deploying = false
+        },
+      });
+
 
       // console.log(e.srcElement.input#)
 
@@ -89,6 +110,25 @@ export default {
         <input class="button-primary" type="submit" value="Create Token">
       </fieldset>
     </form>
+
+  </div>
+
+  <div class="events">
+    <span v-if="deploying">
+      Deploying...
+    </span>
+
+    <div v-for="(event, index) in deployEvents" :key="index">
+      <span v-if="event.type === 'PROXY'">
+        Contract deployed: {{ event.contractName }} ({{ event.type }})<br>
+        Transaction hash: <a :href="'https://blockscout.com/lukso/l14/tx/' + event.receipt.transactionHash" target="_blank">{{event.receipt.transactionHash}}</a>
+      </span>
+      <br>
+      <span v-if="event.type === 'TRANSACTION'">
+        Function called: {{ event.functionName }}()<br>
+        Transaction hash: <a :href="'https://blockscout.com/lukso/l14/tx/' + event.receipt.transactionHash" target="_blank">{{event.receipt.transactionHash}}</a>
+      </span>
+    </div>
   </div>
 
 </template>

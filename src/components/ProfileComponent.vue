@@ -45,8 +45,8 @@ export default {
       this.profileData = { // merge profileData with fetched profile data
         ...this.profileData,
         ...metaData.LSP3Profile.LSP3Profile // The first "LSP3Profile" is the ERC725 Key, the second "LSP3Profile" the property within the retrieved JSON file
-      }
-      // TODO remove ^
+      } // TODO remove ^
+      
 
       // GET the right image size for the profile image from the profile images array
       this.profileData.profileImage = _.find(this.profileData.profileImage, (image) => {
@@ -84,7 +84,7 @@ export default {
     </span>
     <p  v-else-if="profileData.name === false">
       Sorry you only have a simple EOA (MetaMask?)<br>
-      Your user experience just degraded by 256%
+      Your user experience just degraded by 1000%
     </p>
 
     <p class="description">

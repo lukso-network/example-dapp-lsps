@@ -17,6 +17,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    exclude: ['electron-fetch'] // 'ipfs-http-client'
+    exclude: ["electron-fetch", "electron"] // Fix for lsp-factory.js
   }
 })
