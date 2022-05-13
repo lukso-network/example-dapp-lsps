@@ -1,7 +1,7 @@
 <script>
 import _ from "underscore"
 import ERC725js from "@erc725/erc725.js"
-import LSP3UniversalProfileMetaDataSchema from "@erc725/erc725.js/build/main/schemas/LSP3UniversalProfile.json"
+import LSP3UniversalProfileMetaDataSchema from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetaData.json"
 import identicon from "ethereum-blockies-base64"
 
 
@@ -44,8 +44,8 @@ export default {
       const metaData = await profile.fetchData('LSP3Profile')
       this.profileData = { // merge profileData with fetched profile data
         ...this.profileData,
-        ...metaData.LSP3Profile.LSP3Profile // The first "LSP3Profile" is the ERC725 Key, the second "LSP3Profile" the property within the retrieved JSON file
-      } // TODO remove ^
+        ...metaData.LSP3Profile
+      }
       
 
       // GET the right image size for the profile image from the profile images array
@@ -55,8 +55,7 @@ export default {
       })
 
       // change the IPFS path to a provider of our choice
-      if(this.profileData.profileImage.url.substr('ipfs://' != -1))
-        this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.config.ipfsGateway) // TODO remove config
+      this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway)
 
     // IF it fails its likely NO Universal Profile, or a simple EOA (MetaMask)
     } catch(e) {
@@ -83,8 +82,8 @@ export default {
       @{{profileData.name}}
     </span>
     <p  v-else-if="profileData.name === false">
-      Sorry you only have a simple EOA (MetaMask?)<br>
-      Your user experience just degraded by 1000%
+      Sorry you use a simple EOA (MetaMask?)<br>
+      Your user experience just degraded by 1000% 🤷‍♂️
     </p>
 
     <p class="description">
