@@ -14,7 +14,8 @@ export default {
   data() {
     return {
       deploying: false,
-      deployEvents: []
+      deployEvents: [],
+      error: false
     }
   },
 
@@ -86,7 +87,13 @@ export default {
         digitalAssetMetadata: LSP4MetaData
         // creators? string[]: Array of ERC725Account addresses that defines the creators of the digital asset. Used to set the LSP4Creators[] key on the contract.
       },{
-        deployReactive: true
+        deployReactive: true,
+        uploadOptions: {
+          ipfsClientOptions: {
+          host: '2eff.lukso.dev',
+          port: 5001,
+          protocol: 'https',
+        }} // todo change to ipfsGateway: 'https://2eff.lukso.dev'
       }).subscribe({
         next: (deploymentEvent) => {
           console.log(deploymentEvent)
@@ -99,6 +106,10 @@ export default {
           // if(deploymentEvent.status === "COMPLETE") // TODO reenable
             this.deployEvents.push(deploymentEvent);
         },
+        error: (error) => {
+          this.deploying = false
+          this.error = error.message
+        },
         complete: async (contracts) => {
           this.deploying = false
          
@@ -107,7 +118,7 @@ export default {
           const newAsset = contractAddress
 
           const options = {
-            ipfsGateway: 'https://ipfs.lukso.network/ipfs/'
+            ipfsGateway: 'https://2eff.lukso.dev'
           }
 
           // TODO fix  with new erc725.js
@@ -171,6 +182,10 @@ export default {
 
   <a class="back" href="/">&lt;</a>
 
+  <p class="warning" v-if="error">
+    {{error}}
+  </p>
+
   <div class="center">
     <h2>
       Create your own ERC20-like Token
@@ -179,7 +194,7 @@ export default {
 
     <br><br>
 
-    <form @submit.prevent="onSubmit" class="left">
+    <form v-if="!deploying" @submit.prevent="onSubmit" class="left">
       <fieldset>
         <label for="name">Name</label>
         <input type="text" placeholder="MyToken" id="name" required>
@@ -203,8 +218,11 @@ export default {
 
   <div class="events">
     <span v-if="deploying">
-      Deploying...
+        Deploying Smart Contracts..<br>
+        <strong>Please confirm all transactions in your browser extension, and wait until they are added to the Blockchain.</strong>
     </span>
+
+    <br><br>
 
     <div v-for="(event, index) in deployEvents" :key="index">
       <span v-if="event.type === 'PROXY'">

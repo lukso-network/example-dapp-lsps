@@ -36,7 +36,7 @@ export default {
     // INSTANTIATE erc725.js
     // window.web3 was set in App.vue
     const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
-      ipfsGateway: 'https://ipfs.lukso.network/ipfs/'
+      ipfsGateway: 'https://2eff.lukso.dev'
     })
     
     // GET the UNIVERSAL PROFILE DATA
