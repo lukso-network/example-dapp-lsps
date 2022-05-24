@@ -18,5 +18,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ["electron-fetch", "electron"] // Fix for lsp-factory.js
-  }
+  },
+  // Change base URL in .env file (for production)
+  base: process.env.VUE_APP_BASEURL
 })
