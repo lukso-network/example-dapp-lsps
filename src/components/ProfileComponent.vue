@@ -1,7 +1,7 @@
 <script>
 import _ from "underscore"
 import ERC725js from "@erc725/erc725.js"
-import LSP3UniversalProfileMetaDataSchema from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetaData.json"
+import LSP3UniversalProfileMetaDataSchema from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json"
 import identicon from "ethereum-blockies-base64"
 
 
@@ -38,7 +38,7 @@ export default {
     const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
       ipfsGateway: 'https://2eff.lukso.dev/ipfs/' // todo the gateway should be without /ipfs/
     })
-    
+
     // GET the UNIVERSAL PROFILE DATA
     try {
       const metaData = await profile.fetchData('LSP3Profile')
@@ -46,19 +46,19 @@ export default {
         ...this.profileData,
         ...metaData.LSP3Profile
       }
-      
+
 
       // GET the right image size for the profile image from the profile images array
       this.profileData.profileImage = _.find(this.profileData.profileImage, (image) => {
-        if(image.width >= 200 && image.width <= 500)
+        if (image.width >= 200 && image.width <= 500)
           return image
       })
 
       // change the IPFS path to a provider of our choice
       this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway)
 
-    // IF it fails its likely NO Universal Profile, or a simple EOA (MetaMask)
-    } catch(e) {
+      // IF it fails its likely NO Universal Profile, or a simple EOA (MetaMask)
+    } catch (e) {
       console.warn('You are not logged in with a Universal Profile, your users user experience just degraded by 256%')
       this.profileData.name = false;
     }
@@ -79,15 +79,15 @@ export default {
     </div>
 
     <span class="username" v-if="profileData.name">
-      @{{profileData.name}}
+      @{{ profileData.name }}
     </span>
-    <p  v-else-if="profileData.name === false">
+    <p v-else-if="profileData.name === false">
       Sorry you use a simple EOA (MetaMask?)<br>
       Your user experience just degraded by 1000% 🤷‍♂️
     </p>
 
     <p class="description">
-      {{profileData.description}}
+      {{ profileData.description }}
     </p>
   </div>
 
