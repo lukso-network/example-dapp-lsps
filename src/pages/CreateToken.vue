@@ -5,7 +5,7 @@ import LSP0ERC725Account from "@lukso/lsp-smart-contracts/artifacts/UniversalPro
 // TODO remove
 import ERC725js from "@erc725/erc725.js"
 import LSP4DigitalAssetMetaDataSchema from "@erc725/erc725.js/schemas/LSP4DigitalAsset.json"
-import LSP3UniversalProfileMetaDataSchema from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetaData.json"
+import LSP3UniversalProfileMetaDataSchema from "@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json"
 </script>
 
 <script>
@@ -22,33 +22,44 @@ export default {
   // Executed when the login page is rendered
   async mounted() {
 
-        
-    // return
 
-    // const newAsset = '0x64B5F0647227Fe99cC310FA633be5F946A623474'
+const accounts = await web3.eth.getAccounts()
 
-    // const options = {
-    //   ipfsGateway: 'https://ipfs.lukso.network/ipfs/'
-    // }
 
-    // const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, accounts[0], window.web3.currentProvider, options)
-    // const asset = new ERC725js(LSP4DigitalAssetMetaDataSchema, newAsset, window.web3.currentProvider, options)
+    const newAsset = '0x64B5F0647227Fe99cC310FA633be5F946A623474'
 
-    // // GET the current issued assets
-    // const LSP3IssuedAssets = await profile.getData('LSP3IssuedAssets[]')
+// ADD creations to UP
+          // const options = {
+          //   ipfsGateway: 'https://2eff.lukso.dev/ipfs/' // todo the gateway should be without /ipfs/
+          // }
 
-    // // add new asset
-    // LSP3IssuedAssets.push(newAsset)
+          // // TODO fix  with new erc725.js
+          // const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, accounts[0], window.web3.currentProvider, options)
+          // // const asset = new ERC725js(LSP4DigitalAssetMetaDataSchema, contractAddress, window.web3.currentProvider, options)
+          // // console.log(await asset.fetchData('LSP4Metadata'))
 
-    // const newData = profile.encodeData({
-    //   'LSP3IssuedAssets[]': LSP3IssuedAssets,
-    //   LSP3IssuedAssetsMap: {
-    //     dynamicKeyParts: newAsset,
-    //     value: web3.utils.leftPad(LSP3IssuedAssets.length - 1, 16) + 'e33f65c3' // index position of asset + LSP7 interface ID: 0xe33f65c3
-    //   }
-    // });
+          // // GET the current issued assets
+          // const LSP3IssuedAssets = await profile.getData('LSP3IssuedAssets[]')
 
-    // await profileContract.methods.setData(newData.keys, newData.values).send()
+          // // add new asset
+          // LSP3IssuedAssets.push(newAsset)
+          // console.log(LSP3IssuedAssets)
+
+          // const newData = profile.encodeData({ // TODO change to ERC725js
+          //   'LSP3IssuedAssets[]': LSP3IssuedAssets,
+          //   // 'LSP3IssuedAssetsMap:<address>': {
+          //     //   dynamicKeyParts: newAsset,
+          //   //   value: web3.utils.leftPad(LSP3IssuedAssets.length - 1, 16) + 'e33f65c3' // index position of asset + LSP7 interface ID: 0xe33f65c3
+          //   // }
+          // });
+
+          // // add asset map key and value
+          // // construct asset map key
+          // const LSP3IssuedAssetsMapKey = ERC725js.encodeKeyName('LSP3IssuedAssetsMap:' + newAsset.replace('0x', '')); // TODO use instance
+          // newData.keys.push(LSP3IssuedAssetsMapKey)
+          // newData.values.push(web3.utils.leftPad(LSP3IssuedAssets.length - 1, 16) + 'e33f65c3') // index position of asset + LSP7 interface ID: 0xe33f65c3
+
+          // console.log(newData)
     
   },
 
@@ -75,35 +86,26 @@ export default {
 
 
       // show the deploying status...
+      this.deployEvents = []
       this.deploying = true
-      let contractAddress
+
       
       // DEPLOY the LSP7 token
       factory.LSP7DigitalAsset.deploy({
         name: e.target.querySelector('input#name').value, 
         symbol: e.target.querySelector('input#symbol').value,
-        controllerAddress: accounts[0],
+        controllerAddress: accounts[0], // the "issuer" of the asset, that is allowed to change meta data
+        creators: [accounts[0]], // Array of ERC725Account addresses that define the creators of the digital asset.
         isNFT: false, // Token decimals set to 18
         digitalAssetMetadata: LSP4MetaData
-        // creators? string[]: Array of ERC725Account addresses that defines the creators of the digital asset. Used to set the LSP4Creators[] key on the contract.
       },{
         deployReactive: true,
-        uploadOptions: {
-          ipfsClientOptions: {
-          host: '2eff.lukso.dev',
-          port: 5001,
-          protocol: 'https',
-        }} // todo change to ipfsGateway: 'https://2eff.lukso.dev'
+        ipfsGateway: 'https://api.2eff.lukso.dev:443'
       }).subscribe({
         next: (deploymentEvent) => {
           console.log(deploymentEvent)
-          deploymentEvent.receipt = deploymentEvent.receipt || {} // TODO remove
 
-          // TODO remove
-          if(deploymentEvent.receipt.contractAddress)
-            contractAddress = deploymentEvent.receipt.contractAddress
-
-          // if(deploymentEvent.status === "COMPLETE") // TODO reenable
+          if(deploymentEvent.status === "COMPLETE")
             this.deployEvents.push(deploymentEvent);
         },
         error: (error) => {
@@ -112,62 +114,48 @@ export default {
         },
         complete: async (contracts) => {
           this.deploying = false
+
+          if(!contracts || !contracts.LSP7DigitalAsset) {
+            this.error = 'Error deploying LSP7DigitalAsset'
+            return
+          }
          
-
           // ADD creations to UP
-          const newAsset = contractAddress
-
-          const options = {
-            ipfsGateway: 'https://2eff.lukso.dev'
+           const options = {
+            ipfsGateway: 'https://2eff.lukso.dev/ipfs/' // todo the gateway should be without /ipfs/
           }
 
           // TODO fix  with new erc725.js
-          const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0])
           const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, accounts[0], window.web3.currentProvider, options)
-          const asset = new ERC725js(LSP4DigitalAssetMetaDataSchema, contractAddress, window.web3.currentProvider, options)
+          const asset = new ERC725js(LSP4DigitalAssetMetaDataSchema, contracts.LSP7DigitalAsset.address, window.web3.currentProvider, options)
+          console.log('ASSET', await asset.fetchData('LSP4Metadata'))
 
-          console.log(await asset.fetchData('LSP4Metadata'))
+          // GET the current issued assets
+          const LSP3IssuedAssets = await profile.getData('LSP3IssuedAssets[]') //TODO change to LSP12IssuedAssets[]
 
-          // get issued assets
-          const LSP3IssuedAssets = await profile.getData('LSP3IssuedAssets[]')
+          // add new asset
+          LSP3IssuedAssets.push(newAsset)
           console.log(LSP3IssuedAssets)
-          LSP3IssuedAssets['LSP3IssuedAssets[]'].push(newAsset)
 
-          // construct asset map key
-          const LSP3IssuedAssetsMapKey = ERC725js.encodeKeyName('LSP3IssuedAssetsMap:' + newAsset.replace('0x', '')); // TODO use instance
-
-
-          console.log(LSP3IssuedAssets['LSP3IssuedAssets[]'])
-          console.log(LSP3IssuedAssetsMapKey)
-
-
-          const encodedDataManyKeys = profile.encodeData({
-            'LSP3IssuedAssets[]': LSP3IssuedAssets['LSP3IssuedAssets[]'],
-            // LSP3IssuedAssetsMap: {
-            //   dynamicKeyParts: '0xa3e6F38477D45727F6e6f853Cdb479b0D60c0aC9',
-            //   value: '0xa3e6F38477D45727F'
+          const newData = profile.encodeData({ // TODO change to ERC725js
+            'LSP3IssuedAssets[]': LSP3IssuedAssets,
+            // 'LSP3IssuedAssetsMap:<address>': {
+              //   dynamicKeyParts: newAsset,
+            //   value: web3.utils.leftPad(LSP3IssuedAssets.length - 1, 16) + 'e33f65c3' // index position of asset + LSP7 interface ID: 0xe33f65c3
             // }
           });
 
           // add asset map key and value
-          encodedDataManyKeys['LSP3IssuedAssets[]'].value.push({
-            key: LSP3IssuedAssetsMapKey,
-            value: web3.utils.leftPad(LSP3IssuedAssets['LSP3IssuedAssets[]'].length - 1, 16) + 'e33f65c3' // index position of asset + LSP7 interface ID: 0xe33f65c3
-          })
+          // construct asset map key
+          const LSP3IssuedAssetsMapKey = ERC725js.encodeKeyName('LSP3IssuedAssetsMap:' + newAsset.replace('0x', '')); // TODO use instance; change to LSP12IssuedAssetsMap
+          newData.keys.push(LSP3IssuedAssetsMapKey)
+          newData.values.push(web3.utils.leftPad(LSP3IssuedAssets.length - 1, 16) + 'e33f65c3') // index position of asset + LSP7 interface ID: 0xe33f65c3
 
-          const dataKeys = []
-          const dataValues = []
-
-          encodedDataManyKeys['LSP3IssuedAssets[]'].value.forEach(element => {
-            dataKeys.push(element.key)
-            dataValues.push(element.value)
-          });
-
-          console.log(dataKeys, dataValues)
+          console.log(newData)
 
           // send transaction
-          await profileContract.methods.setData(dataKeys, dataValues).send({from: accounts[0]})
-
+          const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0])
+          await profileContract.methods.setData(newData.keys, newData.values).send({from: accounts[0]})
 
         },
       });
@@ -225,8 +213,8 @@ export default {
     <br><br>
 
     <div v-for="(event, index) in deployEvents" :key="index">
-      <span v-if="event.type === 'PROXY'">
-        Contract deployed: {{ event.contractName }} ({{ event.type }}): <a :href="'https://blockscout.com/lukso/l14/address/' + event.receipt.contractAddress" target="_blank">{{event.receipt.contractAddress}}</a><br>
+      <span v-if="event.type === 'PROXY_DEPLOYMENT'">
+        Contract deployed: {{ event.contractName }} ({{ event.type }}): <a :href="'https://blockscout.com/lukso/l14/address/' + event.contractAddress" target="_blank">{{event.contractAddress}}</a><br>
         Transaction hash: <a :href="'https://blockscout.com/lukso/l14/tx/' + event.receipt.transactionHash" target="_blank">{{event.receipt.transactionHash}}</a>
       </span>
       <br>
