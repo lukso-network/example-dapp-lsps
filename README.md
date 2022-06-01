@@ -19,3 +19,10 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Test Production locally
+
+```
+npm install -g serve
+serve -s dist
+```
