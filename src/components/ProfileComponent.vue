@@ -80,11 +80,11 @@ export default {
     <span class="username" v-if="profileData.name">
       @{{ profileData.name }}
     </span>
-    <p v-else-if="profileData.name === false">
-      Sorry you use a simple EOA (MetaMask?)<br>
-      Your user experience just degraded by 1000% 🤷‍♂️
+    <p v-else-if="profileData.name === false" class="warning" id="extension">
+      You can use MetaMask with this dApp, but <br> we recommend trying it with the <br><a
+        href="https://docs.lukso.tech/guides/universal-profile/browser-extension/install-browser-extension">Universal
+        Profile Browser Extension</a>.
     </p>
-
     <p class="description">
       {{ profileData.description }}
     </p>
