@@ -16,28 +16,28 @@ export default {
 
     // TRY getting the UniversalProfile address
     try {
-      const accounts = await web3.eth.getAccounts()
+      const accounts = await ethereum.request({ method: "eth_accounts" });
 
-      if(!accounts.length) {
-        throw Error('No accounts given: ' + accounts)
+      if (!accounts.length) {
+        throw Error('No accounts given: ' + accounts);
       }
 
       console.log(
-       "Authenticated account:\n", 
-       accounts
-      )
+        "Authenticated account:\n",
+        accounts
+      );
 
       // GET the Universal Profile / Meta Mask address(es)
       // set the account globally, to reduce getAccounts calls in components
-      window.account = accounts[0]
-    
-    // OTHERWISE go to the login page, if no browser extension can be detected, or no accounts are exposed
-    } catch(e) {
+      window.account = accounts[0];
+
+      // OTHERWISE go to the login page, if no browser extension can be detected, or no accounts are exposed
+    } catch (e) {
       console.log(
         "Not authenticated:\n\n",
         e
-      )
-      this.$router.push('/login')
+      );
+      this.$router.push('/login');
     }
 
   }
@@ -51,7 +51,7 @@ export default {
 
 
     </header>
-    
+
     <main>
       <router-view />
     </main>
@@ -61,5 +61,5 @@ export default {
 </template>
 
 <style lang="less">
-  @import "./styles.less";
+@import "./styles.less";
 </style>

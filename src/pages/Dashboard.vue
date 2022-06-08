@@ -12,8 +12,8 @@ export default {
 
   // Executed when the login page is rendered
   async mounted() {
-    
-    
+
+
   },
 
   methods: {
@@ -33,7 +33,8 @@ export default {
     <ProfileComponent />
 
     <button @click="$router.push('/createToken')">Create a Token</button>
-    <button @click="$router.push('/createNFTCollection')">Create an NFT Collection</button>
+    <!--TODO: add onclick after router is working-->
+    <button>Create an NFT Collection</button>
   </div>
 
 </template>
