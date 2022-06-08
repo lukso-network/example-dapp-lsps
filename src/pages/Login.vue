@@ -15,7 +15,7 @@ export default {
 
     // CHECK if BROWSER is Chrome or Firefox
     if (navigator.userAgent.indexOf("Firefox") != -1 || navigator.userAgent.indexOf("Chrome") != -1) {
-      this.isUnsupportedBrowser = false
+      this.isUnsupportedBrowser = false;
     }
 
 
@@ -23,25 +23,27 @@ export default {
     // AND/OR Universal Profile is LOGGED IN (address is available)
     try {
 
-      const accounts = await web3.eth.getAccounts()
+      // Get account
+      if (window.ethereum) {
 
-      // IF accounts are empty, require login
-      if (!accounts.length)
-        this.requiresLogin = true
+        // Request account
+        const accounts = await ethereum.request({ method: "eth_accounts" });
 
-      // OTHERWISE user is logged in, go to the dashboard
-      else
-        this.$router.push('/')
+        // If no account was found
+        if (!accounts.length) {
+          this.requiresLogin = true;
+        }
 
+        // OTHERWISE user is logged in, go to the dashboard
+        else {
+          this.$router.push('/')
+        }
+      }
 
       // IF web3.js couldn't connect it will throw Error: "Provider not set or invalid"
       // then and we ask the user to install the browser extension
     } catch (e) {
-
-      if (e.code == 4100) // TODO remove when empty array is returned
-        this.requiresLogin = true
-      else
-        this.requiresBrowserExtension = true
+      this.requiresBrowserExtension = true
     }
   },
 
@@ -50,14 +52,14 @@ export default {
     async login() {
 
       // Request an account
-      const accounts = await web3.eth.requestAccounts()
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 
       // check if any number of accounts was returned
       // IF go to the dashboard
       if (accounts.length)
-        this.$router.push('/')
+        this.$router.push('/');
       else
-        this.error = 'No account was selected!'
+        this.error = 'No account was selected!';
     }
   }
 
