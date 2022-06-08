@@ -21,29 +21,29 @@ export default {
 
     // CHECK if BROWSER EXTENSION is INSTALLED
     // AND/OR Universal Profile is LOGGED IN (address is available)
-    try {
 
-      // Get account
-      if (window.ethereum) {
+    // Get account
+    if (window.ethereum) {
 
-        // Request account
-        const accounts = await ethereum.request({ method: "eth_accounts" });
+      // Request account
+      const accounts = await ethereum.request({ method: "eth_accounts" });
 
-        // If no account was found
-        if (!accounts.length) {
-          this.requiresLogin = true;
-        }
-
-        // OTHERWISE user is logged in, go to the dashboard
-        else {
-          this.$router.push('/')
-        }
+      // If no account was found
+      if (!accounts.length) {
+        this.requiresLogin = true;
       }
 
-      // IF web3.js couldn't connect it will throw Error: "Provider not set or invalid"
-      // then and we ask the user to install the browser extension
-    } catch (e) {
-      this.requiresBrowserExtension = true
+      // OTHERWISE user is logged in, go to the dashboard
+      else {
+        this.$router.push('/')
+      }
+    }
+
+    // No ethereum extension connected
+    // We ask the user to install the browser extension
+    else {
+      this.requiresBrowserExtension = true;
+      window.document.getElementById("singular-extension-notification").style.display = "none";
     }
   },
 
@@ -79,8 +79,8 @@ export default {
     <br>
   </div>
 
-  <p class="note">If you have MetaMask AND Universal Profile Browser Extension installed, please
-    disable one of them! See these guides for
+  <p class="note" id="singular-extension-notification">If you have MetaMask AND Universal Profile Browser Extension
+    installed, please disable one of them! See these guides for
     <a href="https://support.google.com/chrome_webstore/answer/2664769?hl=en" target="_blank">Chrome</a> and
     <a href="https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons#w_disabling-and-removing-extensions"
       target="_blank">Firefox</a>.
