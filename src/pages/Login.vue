@@ -79,6 +79,12 @@ export default {
     <br>
   </div>
 
+  <p class="note">If you have MetaMask AND Universal Profile Browser Extension installed, please
+    disable one of them! See these guides for
+    <a href="https://support.google.com/chrome_webstore/answer/2664769?hl=en" target="_blank">Chrome</a> and
+    <a href="https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons#w_disabling-and-removing-extensions"
+      target="_blank">Firefox</a>.
+  </p>
 
   <p class="warning" v-if="error">
     {{ error }}
@@ -86,36 +92,26 @@ export default {
 
 
   <p class="note" v-if="isUnsupportedBrowser">
-    This app can only be used with <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a
-      href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> at this point
+    Please switch to a <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a
+      href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> browser to use this dApp.
   </p>
   <div class="login center" v-else>
 
     <!-- Ask the user to DOWNLOAD the BROWSER EXTENSION -->
     <div v-if="requiresBrowserExtension">
-      <h2>
-        Please install the Universal Profile Browser extension to login
-      </h2>
-      <p>
-        Download the browser extension and follow
+      <p class="warning">
+        Please install the
         <a href="https://docs.lukso.tech/guides/universal-profile/browser-extension/install-browser-extension"
-          target="_blank">this tutorial</a>
-        to install it.
+          target="_blank">Universal Profile Browser Extension</a> or
+        <a href="https://metamask.io/" target="_blank">MetaMask</a> to use this dApp.
       </p>
-
-      <br>
-
-      <a class="button"
-        href="https://storage.googleapis.com/up-browser-extension/universalprofile-extension-v1.0.0-develop.143.zip">
-        Download Universal Profile Browser extension
-      </a>
     </div>
 
 
     <!-- Ask the user to LOGIN, using the bowser extension -->
     <div v-else-if="requiresLogin">
 
-      <button @click="login">Login with your Universal Profile</button>
+      <button @click="login">Log in to your browser extension</button>
     </div>
 
   </div>
