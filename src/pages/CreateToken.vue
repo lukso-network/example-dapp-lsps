@@ -168,7 +168,7 @@ export default {
 
 <template>
 
-  <a class="back" href="/">&lt;</a>
+  <a class="back" @click="$router.push('/')">&lt;</a>
 
   <p class="warning" v-if="error">
     {{ error }}
