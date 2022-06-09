@@ -41,17 +41,21 @@ export default {
       });
 
       const metaData = await profile.fetchData('LSP3Profile');
+
       this.profileData = { // merge profileData with fetched profile data
         ...this.profileData,
         ...metaData.LSP3Profile
       };
-
 
       // GET the right image size for the profile image from the profile images array
       this.profileData.profileImage = _.find(this.profileData.profileImage, (image) => {
         if (image.width >= 200 && image.width <= 500)
           return image
       });
+
+      // If there is no image of the preferred size, take the default one
+      if (this.profileData.profileImage == undefined)
+        this.profileData.profileImage = metaData.LSP3Profile.profileImage[0];
 
       // change the IPFS path to a provider of our choice
       this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway);
