@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard.vue";
 import CreateToken from "./pages/CreateToken.vue";
 // import CreateNFTCollection from "./pages/CreateNFTCollection.vue";
 
-const history = createWebHistory(import.meta.env.BASE_URL);
+const history = createWebHistory("/");
 const routes = [
   {
     path: "/",
