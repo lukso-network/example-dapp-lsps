@@ -75,8 +75,9 @@ export default {
     <h3>
       Universal Profiles, Tokens (LSP7) and NFTs (LSP8)
     </h3>
-    <br>
   </div>
+  <br>
+
 
   <p class="note" v-if="useOnlyOneExtension">If you have MetaMask AND Universal Profile Browser Extension
     installed, please disable one of them! See these guides for
@@ -95,6 +96,8 @@ export default {
     or
     <a href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> browser to use this dApp.
   </p>
+
+
   <div class="login center" v-else>
 
     <!-- Ask the user to DOWNLOAD the BROWSER EXTENSION -->
