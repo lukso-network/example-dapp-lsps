@@ -6,6 +6,7 @@ export default {
       isUnsupportedBrowser: true,
       requiresBrowserExtension: false,
       requiresLogin: false,
+      useOnlyOneExtension: true,
       error: false
     }
   },
@@ -43,7 +44,7 @@ export default {
     // We ask the user to install the browser extension
     else {
       this.requiresBrowserExtension = true;
-      window.document.getElementById("singular-extension-notification").style.display = "none";
+      this.useOnlyOneExtension = false;
     }
   },
 
@@ -79,11 +80,11 @@ export default {
     <br>
   </div>
 
-  <p class="note" id="singular-extension-notification">If you have MetaMask AND Universal Profile Browser Extension
+  <p class="note" v-if="useOnlyOneExtension">If you have MetaMask AND Universal Profile Browser Extension
     installed, please disable one of them! See these guides for
-    <a href="https://support.google.com/chrome_webstore/answer/2664769?hl=en" target="_blank">Chrome</a> and
-    <a href="https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons#w_disabling-and-removing-extensions"
-      target="_blank">Firefox</a>.
+    <a href="https://support.google.com/chrome_webstore/answer/2664769?hl=en" target="_blank">Chrome</a>
+    and
+    <a href="https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons#w_disabling-and-removing-extensions" target="_blank">Firefox</a>.
   </p>
 
   <p class="warning" v-if="error">
@@ -92,8 +93,9 @@ export default {
 
 
   <p class="note" v-if="isUnsupportedBrowser">
-    Please switch to a <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a
-      href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> browser to use this dApp.
+    Please switch to a <a href="https://www.google.com/chrome/" target="_blank">Chrome</a>
+    or
+    <a href="https://www.mozilla.org/firefox/new/" target="_blank">Firefox</a> browser to use this dApp.
   </p>
   <div class="login center" v-else>
 
@@ -101,8 +103,8 @@ export default {
     <div v-if="requiresBrowserExtension">
       <p class="warning">
         Please install the
-        <a href="https://docs.lukso.tech/guides/universal-profile/browser-extension/install-browser-extension"
-          target="_blank">Universal Profile Browser Extension</a> or
+        <a href="https://docs.lukso.tech/guides/universal-profile/browser-extension/install-browser-extension" target="_blank">Universal Profile Browser Extension</a>
+        or
         <a href="https://metamask.io/" target="_blank">MetaMask</a> to use this dApp.
       </p>
     </div>
