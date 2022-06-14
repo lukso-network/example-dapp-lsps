@@ -32,17 +32,15 @@ export default {
       // If no account was found
       if (!accounts.length) {
         this.requiresLogin = true;
-      }
-
+      
       // OTHERWISE user is logged in, go to the dashboard
-      else {
+      } else {
         this.$router.push('/')
       }
-    }
 
     // No ethereum extension connected
     // We ask the user to install the browser extension
-    else {
+    } else {
       this.requiresBrowserExtension = true;
       this.useOnlyOneExtension = false;
     }
