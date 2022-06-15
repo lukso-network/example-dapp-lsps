@@ -2,26 +2,63 @@
   "name": "-example-dapp-lsps",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview --port 5050"
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "serve": "vue-cli-service serve"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "rules": {
+      "vue/multi-word-component-names": "warn",
+      "no-undef": "warn",
+      "no-unused-vars": "warn"
+    },
+    "root": true
   },
   "dependencies": {
-    "@erc725/erc725.js": "^0.12.0",
-    "@lukso/lsp-factory.js": "^2.2.0",
+    "@erc725/erc725.js": "^0.14.1",
+    "@lukso/lsp-factory.js": "^2.3.0",
     "@lukso/lsp-smart-contracts": "^0.5.0",
-    "browserify-zlib": "^0.2.0",
     "ethereum-blockies-base64": "^1.0.2",
-    "stream-browserify": "^3.0.0",
     "underscore": "^1.13.2",
-    "vue": "^3.2.31",
+    "vue": "^3.2.13",
     "vue-router": "^4.0.14",
     "web3": "^1.7.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
     "@vitejs/plugin-vue": "^2.2.2",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "core-js": "^3.23.1",
+    "crypto-browserify": "^3.12.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "https-browserify": "^1.0.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
-    "vite": "^2.8.4"
+    "os-browserify": "^0.3.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0"
   }
 }
