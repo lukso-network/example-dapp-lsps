@@ -3,6 +3,7 @@ import _ from 'underscore';
 import ERC725js from '@erc725/erc725.js';
 import LSP3UniversalProfileMetaDataSchema from '@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json';
 import identicon from 'ethereum-blockies-base64';
+import { IPFS_GATEWAY_BASE_URL } from '../constants';
 
 export default {
   data() {
@@ -20,30 +21,32 @@ export default {
   // Here we LOAD the Universal Profile data
   async mounted() {
     // GET the UNIVERSAL PROFILE DATA
+    const accounts = await web3.eth.getAccounts();
+
+    // TODO: make sure accounts is not empty!
+    const account = accounts[0]; // set the first address as the Universal Profile address
+
+    // set the address, wether Universal Profile or EOA (MetaMask)
+    this.profileData.address = account;
+
+    // generate identicon
+    this.profileData.identicon = identicon(account); // generates a "data:image/png;base64,..."
+
+    // INSTANTIATE erc725.js
+    // window.web3 was set in App.vue
+    const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
+      ipfsGateway: IPFS_GATEWAY_BASE_URL, // todo the gateway should be without /ipfs/
+    });
+
     try {
-      console.log('web3', web3);
-      const accounts = await web3.eth.getAccounts();
-      console.log('accounts', accounts);
-      const account = accounts[0]; // set the first address as the Universal Profile address
-
-      // set the address, wether Universal Profile or EOA (MetaMask)
-      this.profileData.address = account;
-
-      // generate identicon
-      this.profileData.identicon = identicon(account); // generates a "data:image/png;base64,..."
-
-      // INSTANTIATE erc725.js
-      // window.web3 was set in App.vue
-      const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
-        ipfsGateway: 'https://2eff.lukso.dev/ipfs/', // todo the gateway should be without /ipfs/
-      });
-
       const metaData = await profile.fetchData('LSP3Profile');
+
+      console.log('metaData', metaData);
 
       this.profileData = {
         // merge profileData with fetched profile data
         ...this.profileData,
-        ...metaData.LSP3Profile,
+        ...metaData.value.LSP3Profile,
       };
 
       // GET the right image size for the profile image from the profile images array
@@ -51,11 +54,8 @@ export default {
         if (image.width >= 200 && image.width <= 500) return image;
       });
 
-      // If there is no image of the preferred size, take the default one
-      // if (this.profileData.profileImage == undefined) this.profileData.profileImage = metaData.LSP3Profile.profileImage[0];
-
       // change the IPFS path to a provider of our choice
-      // this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway);
+      this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway);
 
       // IF it fails its likely NO Universal Profile, or a simple EOA (MetaMask)
     } catch (e) {
@@ -70,10 +70,10 @@ export default {
 </script>
 
 <template>
-  <div class="profile">
+  <div class="center profile">
     <div class="profileImage">
       <div class="identicon" v-bind:style="{ backgroundImage: 'url(' + profileData.identicon + ')' }"></div>
-      <div class="image" v-bind:style="{ backgroundImage: 'url(' + profileData.profileImage.url + ')' }"></div>
+      <div class="image" v-bind:style="{ backgroundImage: 'url(' + profileData.profileImage?.url + ')' }"></div>
     </div>
 
     <span class="username" v-if="profileData.name"> @{{ profileData.name }} </span>

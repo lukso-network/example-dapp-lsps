@@ -1,3 +1,7 @@
+body {
+    background-color: #f6f3f3;
+}
+
 .app.container {
     margin-top: 5em;
     margin-bottom: 5em;
@@ -37,6 +41,7 @@ form {
     font-family: 'Courier New', Courier, monospace;
     color: rgb(102, 101, 101);
     background-color: rgb(226, 224, 224);
+    cursor: pointer;
 
     &:hover,
     &:focus {
@@ -122,4 +127,59 @@ form {
             background-color: rgba(196, 196, 196, 0.5);
         }
     }
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 20px;
+
+    
+}
+
+.preview-card {
+    position: relative;
+  display: block;
+  overflow: hidden;
+  width: 200px;
+
+  height: 200px;
+
+  margin: 0 auto;
+  border-radius: 8px;
+  text-align: left;
+
+  cursor: pointer;
+  background-position: 50%;
+  background-size: cover;
+
+  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 10%);
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  .supply {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 2px 4px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.5;
+  }
+  
+  .image {
+    width: 100%;
+    height: 150px;
+    background-position: center;
+    background-size: cover;
+  }
+  
+  .infos {
+    padding: 10px;
+  }
 }

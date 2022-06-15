@@ -1,23 +1,28 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHashHistory, createRouter } from 'vue-router';
 
-import Login from "./pages/Login.vue";
-import Dashboard from "./pages/Dashboard.vue";
-import CreateToken from "./pages/CreateToken.vue";
+import Login from './pages/Login.vue';
+import Dashboard from './pages/Dashboard.vue';
+import CreateToken from './pages/CreateToken.vue';
+import AssetPage from './pages/AssetPage.vue';
 // import CreateNFTCollection from "./pages/CreateNFTCollection.vue";
 
-const history = createWebHistory("/");
+const history = createWebHashHistory(process.env.BASE_URL);
 const routes = [
   {
-    path: "/",
+    path: '/',
     component: Dashboard,
   },
   {
-    path: "/login",
+    path: '/login',
     component: Login,
   },
   {
-    path: "/createToken",
+    path: '/createToken',
     component: CreateToken,
+  },
+  {
+    path: '/asset/:address',
+    component: AssetPage,
   },
   // {
   //     path: "/createNFTCollection",
