@@ -70,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <div class="profile">
+  <div class="center profile">
     <div class="profileImage">
       <div class="identicon" v-bind:style="{ backgroundImage: 'url(' + profileData.identicon + ')' }"></div>
       <div class="image" v-bind:style="{ backgroundImage: 'url(' + profileData.profileImage?.url + ')' }"></div>

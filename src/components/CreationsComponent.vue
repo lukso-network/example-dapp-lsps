@@ -24,12 +24,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div>
     <h2>Your Creations</h2>
-    <div class="row">
-      <div class="column" v-for="address in addresses" :key="address">
-        <CreationComponentVue :address="address" />
-      </div>
+    <div class="grid">
+      <CreationComponentVue :address="address" v-for="address in addresses" :key="address" />
     </div>
   </div>
 </template>

@@ -16,6 +16,7 @@ export default {
   setup(props) {
     const LSP4TokenName = ref('');
     const LSP4TokenSymbol = ref('');
+    const iconUrl = ref('');
     const LSP4Metadata = ref();
     const totalSupply = ref();
 
@@ -33,20 +34,28 @@ export default {
       LSP4Metadata.value = LSP4DigitalAsset[2].value;
 
       console.log('LSP4Metadata', LSP4DigitalAsset[2].value);
+      iconUrl.value = LSP4DigitalAsset[2].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
 
       // READ supply with web3js
       const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.address);
       totalSupply.value = await lsp4DigitalAssetContract.methods.totalSupply().call();
     });
-    return { LSP4TokenName, LSP4TokenSymbol, LSP4Metadata, totalSupply };
+    return { LSP4TokenName, LSP4TokenSymbol, LSP4Metadata, totalSupply, iconUrl };
   },
 };
 </script>
 
 <template>
   <div>
-    <h3>{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</h3>
-    <p>Supply: {{ totalSupply }}</p>
+    <div class="preview-card" @click="$router.push(`/asset/${address}`)">
+      <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
+        <small class="supply">
+          {{ totalSupply }}
+        </small>
+      </div>
+
+      <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
+    </div>
     <button class="button" @click="$router.push(`/asset/${address}`)">Mint</button>
   </div>
 </template>

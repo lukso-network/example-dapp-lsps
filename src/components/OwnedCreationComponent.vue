@@ -17,6 +17,7 @@ const props = defineProps({
 const LSP4TokenName = ref('');
 const LSP4TokenSymbol = ref('');
 const LSP4Metadata = ref();
+const iconUrl = ref('');
 const balanceOf = ref();
 
 const showModal = ref(false);
@@ -34,6 +35,8 @@ onMounted(async () => {
   LSP4TokenSymbol.value = LSP4DigitalAsset[1].value;
   LSP4Metadata.value = LSP4DigitalAsset[2].value;
 
+  iconUrl.value = LSP4DigitalAsset[2].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
+
   const accounts = await web3.eth.getAccounts();
   // TODO: make sure accounts is not empty!
   const account = accounts[0]; // set the first address as the Universal Profile address
@@ -46,9 +49,14 @@ onMounted(async () => {
 
 <template>
   <div>
-    <h3>{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</h3>
-    <p>Your balance: {{ balanceOf }}</p>
+    <div class="preview-card" @click="showModal = !showModal">
+      <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
+        <small class="supply"> Your balance: {{ balanceOf }} </small>
+      </div>
+
+      <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
+    </div>
     <button class="button" @click="showModal = !showModal">Send</button>
+    <SendModalComponent v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
   </div>
-  <SendModalComponent v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
 </template>

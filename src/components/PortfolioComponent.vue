@@ -28,12 +28,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div>
     <h2>Portfolio</h2>
-    <div class="row">
-      <div class="column" v-for="receivedAsset in receivedAssets" :key="receivedAsset">
-        <OwnedCreationComponent :address="receivedAsset" />
-      </div>
+    <div class="grid">
+      <OwnedCreationComponent :address="receivedAsset" v-for="receivedAsset in receivedAssets" :key="receivedAsset" />
     </div>
   </div>
 </template>

@@ -25,12 +25,14 @@ export default {
 </script>
 
 <template>
-  <div class="center">
+  <div>
     <ProfileComponent />
 
-    <button @click="$router.push('/createToken')">Create a Token</button>
-    <!--TODO: add onclick after router is working-->
-    <button>Create an NFT Collection</button>
+    <div class="center">
+      <button @click="$router.push('/createToken')">Create a Token</button>
+      <!--TODO: add onclick after router is working-->
+      <button>Create an NFT Collection</button>
+    </div>
 
     <CreationsComponent style="margin-top: 60px" />
     <PortfolioComponent style="margin-top: 60px" />
