@@ -30,11 +30,18 @@ async function onSubmit() {
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
 
-  const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, route.params.address);
+  // https://docs.lukso.tech/standards/smart-contracts/lsp7-digital-asset
+  const lsp7DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, route.params.address);
 
   try {
     isLoading.value = true;
-    const receipt = await lsp4DigitalAssetContract.methods.mint(account, parseInt(mintAmount.value, 10), false, '0x').send({ from: account });
+
+    const to = account;
+    const amount = parseInt(mintAmount.value, 10);
+    const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+    const data = '0x';
+
+    const receipt = await lsp7DigitalAssetContract.methods.mint(to, amount, force, data).send({ from: account });
     isLoading.value = false;
     txHash.value = receipt.transactionHash;
   } catch (err) {
@@ -63,7 +70,7 @@ onMounted(async () => {
 
     <form @submit.prevent="onSubmit" class="left">
       <fieldset>
-        <label for="Amount">Amount</label>
+        <label for="amount">Amount</label>
         <input type="number" v-model="mintAmount" placeholder="1" id="amount" required />
 
         <br /><br />

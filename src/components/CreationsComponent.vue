@@ -1,31 +1,26 @@
-<script>
+<script setup>
 import ERC725js from '@erc725/erc725.js';
 
 import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json';
+import { onMounted, ref } from 'vue';
 
 import { IPFS_GATEWAY_BASE_URL } from '../constants';
 import CreationComponentVue from './CreationComponent.vue';
 
-export default {
-  data() {
-    return {
-      addresses: [],
-    };
-  },
-  async mounted() {
-    const accounts = await web3.eth.getAccounts();
-    // TODO: make sure accounts is not empty!
-    const account = accounts[0]; // set the first address as the Universal Profile address
-    const options = {
-      ipfsGateway: IPFS_GATEWAY_BASE_URL,
-    };
-    const erc725LSP12IssuedAssets = new ERC725js(LSP12IssuedAssetsSchema, account, window.web3.currentProvider, options);
-    // GET the current issued assets
-    const LSP12IssuedAssets = (await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]')).value;
-    this.addresses = LSP12IssuedAssets;
-  },
-  components: { CreationComponentVue },
-};
+const addresses = ref([]);
+
+onMounted(async () => {
+  const accounts = await web3.eth.getAccounts();
+  // TODO: make sure accounts is not empty!
+  const account = accounts[0]; // set the first address as the Universal Profile address
+  const options = {
+    ipfsGateway: IPFS_GATEWAY_BASE_URL,
+  };
+  const erc725LSP12IssuedAssets = new ERC725js(LSP12IssuedAssetsSchema, account, window.web3.currentProvider, options);
+  // GET the current issued assets
+  const LSP12IssuedAssets = (await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]')).value;
+  addresses.value = LSP12IssuedAssets;
+});
 </script>
 
 <template>

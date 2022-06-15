@@ -1,6 +1,7 @@
 <script setup>
 import ProfileComponent from '../components/ProfileComponent.vue';
 import CreationsComponent from '../components/CreationsComponent.vue';
+import PortfolioComponent from '../components/PortfolioComponent.vue';
 </script>
 
 <script>
@@ -31,6 +32,7 @@ export default {
     <!--TODO: add onclick after router is working-->
     <button>Create an NFT Collection</button>
 
-    <CreationsComponent />
+    <CreationsComponent style="margin-top: 60px" />
+    <PortfolioComponent style="margin-top: 60px" />
   </div>
 </template>
