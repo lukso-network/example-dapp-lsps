@@ -3,6 +3,7 @@ import _ from 'underscore';
 import ERC725js from '@erc725/erc725.js';
 import LSP3UniversalProfileMetaDataSchema from '@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json';
 import identicon from 'ethereum-blockies-base64';
+import { IPFS_GATEWAY_BASE_URL } from '../constants';
 
 export default {
   data() {
@@ -21,6 +22,8 @@ export default {
   async mounted() {
     // GET the UNIVERSAL PROFILE DATA
     const accounts = await web3.eth.getAccounts();
+
+    // TODO: make sure accounts is not empty!
     const account = accounts[0]; // set the first address as the Universal Profile address
 
     // set the address, wether Universal Profile or EOA (MetaMask)
@@ -32,7 +35,7 @@ export default {
     // INSTANTIATE erc725.js
     // window.web3 was set in App.vue
     const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
-      ipfsGateway: 'https://2eff.lukso.dev/ipfs/', // todo the gateway should be without /ipfs/
+      ipfsGateway: IPFS_GATEWAY_BASE_URL, // todo the gateway should be without /ipfs/
     });
 
     try {
