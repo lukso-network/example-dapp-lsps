@@ -6,7 +6,7 @@ import CreateToken from './pages/CreateToken.vue';
 import AssetPage from './pages/AssetPage.vue';
 // import CreateNFTCollection from "./pages/CreateNFTCollection.vue";
 
-const history = createWebHashHistory('/');
+const history = createWebHashHistory(process.env.BASE_URL);
 const routes = [
   {
     path: '/',
