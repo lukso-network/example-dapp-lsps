@@ -2,6 +2,8 @@
 import { onMounted, defineProps, defineEmits, ref } from 'vue';
 import { isAddress } from 'web3-utils';
 
+import { BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
+
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 
 const props = defineProps({
@@ -12,6 +14,7 @@ const props = defineProps({
 defineEmits(['close']);
 
 const assetRecipient = ref('0x064dDAfBD0D3bdEd05De350129d56F84864952bb');
+const amountToSend = ref(1);
 const isLoading = ref(false);
 const txHash = ref('');
 
@@ -25,6 +28,7 @@ async function sendAsset() {
     return;
   }
 
+  txHash.value = '';
   console.log('Sending asset to:', assetRecipient.value);
 
   const accounts = await web3.eth.getAccounts();
@@ -37,13 +41,16 @@ async function sendAsset() {
     // https://docs.lukso.tech/standards/smart-contracts/lsp7-digital-asset#transfer
     const from = account;
     const to = assetRecipient.value;
-    const amount = 1;
+    const amount = parseInt(amountToSend.value, 10);
     const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
     const data = '0x';
 
     isLoading.value = true;
     const receipt = await lsp7DigitalAssetContract.methods.transfer(from, to, amount, force, data).send({ from: account });
     isLoading.value = false;
+
+    console.info('Transaction receipt:', receipt);
+
     txHash.value = receipt.transactionHash;
   } catch (err) {
     // It can fail if the recipient is not a UP (cf. force option)
@@ -63,6 +70,9 @@ async function sendAsset() {
           <fieldset>
             <label for="assetRecipient">Recipient:</label>
             <input type="text" placeholder="0x..." v-model="assetRecipient" id="assetRecipient" required />
+
+            <label for="amount">Amount:</label>
+            <input type="number" placeholder="0x..." v-model="amountToSend" id="amount" required />
 
             <br /><br />
 
