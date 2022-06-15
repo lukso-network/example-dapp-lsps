@@ -79,6 +79,9 @@ async function sendAsset() {
             <input class="button-primary" type="submit" value="Send" />
           </fieldset>
         </form>
+
+        <!-- TODO: add UP profile image here when address is valid -->
+
         <p v-if="isLoading">Sending asset...</p>
         <p v-if="txHash">
           ✅ Success: tx hash: <a :href="`${BLOCKCHAIN_EXPLORER_BASE_URL}/tx/${txHash}`" target="_blank">{{ txHash }}</a
