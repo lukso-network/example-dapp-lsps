@@ -7,7 +7,7 @@ import ERC725js from '@erc725/erc725.js';
 import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json';
 import LSP3UniversalProfileMetaDataSchema from '@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json';
 
-import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL } from '../constants';
+import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 </script>
 
 <script>
@@ -115,7 +115,7 @@ export default {
 </script>
 
 <template>
-  <a class="back" href="/">&lt;</a>
+  <a class="back" @click="$router.push('/')">&lt;</a>
 
   <p class="warning" v-if="error">
     {{ error }}
@@ -158,14 +158,14 @@ export default {
 
     <div v-for="(event, index) in deployEvents" :key="index">
       <span v-if="event.type === 'PROXY_DEPLOYMENT'">
-        Contract deployed: {{ event.contractName }} ({{ event.type }}): <a :href="'https://blockscout.com/lukso/l14/address/' + event.contractAddress" target="_blank">{{ event.contractAddress }}</a
+        Contract deployed: {{ event.contractName }} ({{ event.type }}): <a :href="`${BLOCKCHAIN_EXPLORER_BASE_URL}/address/${event.contractAddress}`" target="_blank">{{ event.contractAddress }}</a
         ><br />
-        Transaction hash: <a :href="'https://blockscout.com/lukso/l14/tx/' + event.receipt.transactionHash" target="_blank">{{ event.receipt.transactionHash }}</a>
+        Transaction hash: <a :href="`${BLOCKCHAIN_EXPLORER_BASE_URL}/tx/${event.receipt.transactionHash}`" target="_blank">{{ event.receipt.transactionHash }}</a>
       </span>
       <br />
       <span v-if="event.type === 'TRANSACTION'">
         Function called: {{ event.functionName }}()<br />
-        Transaction hash: <a :href="'https://blockscout.com/lukso/l14/tx/' + event.receipt.transactionHash" target="_blank">{{ event.receipt.transactionHash }}</a>
+        Transaction hash: <a :href="`${BLOCKCHAIN_EXPLORER_BASE_URL}/tx/${event.receipt.transactionHash}`" target="_blank">{{ event.receipt.transactionHash }}</a>
       </span>
     </div>
   </div>
