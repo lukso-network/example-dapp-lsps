@@ -4,7 +4,7 @@ import Login from './pages/Login.vue';
 import Dashboard from './pages/Dashboard.vue';
 import CreateToken from './pages/CreateToken.vue';
 import AssetPage from './pages/AssetPage.vue';
-// import CreateNFTCollection from "./pages/CreateNFTCollection.vue";
+import CreateNFTCollection from './pages/CreateNFTCollection.vue';
 
 const history = createWebHashHistory(process.env.BASE_URL);
 const routes = [
@@ -24,10 +24,10 @@ const routes = [
     path: '/asset/:address',
     component: AssetPage,
   },
-  // {
-  //     path: "/createNFTCollection",
-  //     component: CreateNFTCollection
-  // },
+  {
+    path: '/createNFTCollection',
+    component: CreateNFTCollection,
+  },
 ];
 const router = createRouter({
   history,

@@ -1,11 +1,12 @@
 <script setup>
-import { LSPFactory } from '@lukso/lsp-factory.js';
 import LSP0ERC725Account from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json'; // TODO change to LSP0ERC725Account
 
-// TODO remove
+// https://docs.lukso.tech/tools/lsp-factoryjs/getting-started
+import { LSPFactory } from '@lukso/lsp-factory.js';
+
+// https://docs.lukso.tech/tools/erc725js/getting-started
 import ERC725js from '@erc725/erc725.js';
-import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json';
-import LSP3UniversalProfileMetaDataSchema from '@erc725/erc725.js/schemas/LSP3UniversalProfileMetadata.json';
+import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json'; // https://docs.lukso.tech/tools/erc725js/schemas
 
 import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 </script>
@@ -42,6 +43,7 @@ export default {
       this.deploying = true;
 
       // DEPLOY the LSP7 token
+      // https://docs.lukso.tech/tools/lsp-factoryjs/classes/lsp7-digital-asset
       const contracts = await factory.LSP7DigitalAsset.deploy(
         {
           name: e.target.querySelector('input#name').value,
@@ -92,6 +94,9 @@ export default {
       // add new asset
       LSP12IssuedAssets.push(deployedLSP7DigitalAssetContract.address);
 
+      // https://docs.lukso.tech/standards/smart-contracts/interface-ids
+      const LSP7InterfaceId = '0xe33f65c3';
+
       const encodedErc725Data = erc725LSP12IssuedAssets.encodeData([
         {
           keyName: 'LSP12IssuedAssets[]',
@@ -100,15 +105,15 @@ export default {
         {
           keyName: 'LSP12IssuedAssetsMap:<address>',
           dynamicKeyParts: deployedLSP7DigitalAssetContract.address,
-          value: ['0xe33f65c3', LSP12IssuedAssets.length - 1], // LSP7 interface ID: 0xe33f65c3 + index position of asset
+          value: [LSP7InterfaceId, LSP12IssuedAssets.length - 1], // LSP7 interface ID + index position of asset
         },
       ]);
 
-      console.log(encodedErc725Data);
-
-      // send transaction
+      // SEND transaction
       const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0]);
       await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+
+      console.log('All set ✅🤙');
     },
   },
 };
@@ -150,7 +155,7 @@ export default {
 
   <div class="events">
     <span v-if="deploying">
-      Deploying Smart Contracts..<br />
+      Deploying Smart Contracts...<br />
       <strong>Please confirm all transactions in your browser extension, and wait until they are added to the Blockchain.</strong>
     </span>
 
