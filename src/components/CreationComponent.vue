@@ -26,6 +26,7 @@ export default {
       };
 
       // FETCH Metadata with erc725js
+      // https://docs.lukso.tech/standards/nft-2.0/LSP4-Digital-Asset-Metadata
       const erc725Asset = new ERC725js(LSP4DigitalAssetSchema, props.address, window.web3.currentProvider, options);
 
       const LSP4DigitalAsset = await erc725Asset.fetchData(['LSP4TokenName', 'LSP4TokenSymbol', 'LSP4Metadata']);
@@ -34,7 +35,12 @@ export default {
       LSP4Metadata.value = LSP4DigitalAsset[2].value;
 
       console.log('LSP4Metadata', LSP4DigitalAsset[2].value);
-      iconUrl.value = LSP4DigitalAsset[2].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
+
+      const icons = LSP4DigitalAsset[2].value.LSP4Metadata.icon;
+
+      if (icons && icons.length > 0) {
+        iconUrl.value = LSP4DigitalAsset[2].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
+      }
 
       // READ supply with web3js
       const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.address);
