@@ -33,7 +33,7 @@ onMounted(async () => {
 <template>
   <div>
     <h2>Portfolio</h2>
-    <img v-if="receivedAssets.length === 0 && !isLoading" class="emptyLogo" src="/imgs/empty-up.png" alt="No creation" />
+    <img v-if="receivedAssets.length === 0 && !isLoading" class="emptyLogo" src="../assets/empty-up.png" alt="No creation" />
     <div class="grid">
       <OwnedCreationComponent :address="receivedAsset" v-for="receivedAsset in receivedAssets" :key="receivedAsset" />
     </div>
