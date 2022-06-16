@@ -47,31 +47,41 @@ export default {
 
       // DEPLOY the LSP7 token
       // https://docs.lukso.tech/tools/lsp-factoryjs/classes/lsp7-digital-asset
-      const contracts = await factory.LSP7DigitalAsset.deploy(
-        {
-          name: e.target.querySelector('input#name').value,
-          symbol: e.target.querySelector('input#symbol').value,
-          controllerAddress: account, // the "issuer" of the asset, that is allowed to change meta data
-          creators: [account], // Array of ERC725Account addresses that define the creators of the digital asset.
-          isNFT: false, // Token decimals set to 18
-          digitalAssetMetadata: LSP4MetaData,
-        },
-        {
-          ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
-          onDeployEvents: {
-            next: (deploymentEvent) => {
-              console.log(deploymentEvent);
 
-              if (deploymentEvent.status === 'COMPLETE') this.deployEvents.push(deploymentEvent);
-            },
-            error: (error) => {
-              this.deploying = false;
-              this.error = error.message;
-            },
-            complete: async (contracts) => {},
+      let contracts;
+
+      try {
+        contracts = await factory.LSP7DigitalAsset.deploy(
+          {
+            name: e.target.querySelector('input#name').value,
+            symbol: e.target.querySelector('input#symbol').value,
+            controllerAddress: account, // the "issuer" of the asset, that is allowed to change meta data
+            creators: [account], // Array of ERC725Account addresses that define the creators of the digital asset.
+            isNFT: false, // Token decimals set to 18
+            digitalAssetMetadata: LSP4MetaData,
           },
-        }
-      );
+          {
+            ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
+            onDeployEvents: {
+              next: (deploymentEvent) => {
+                console.log(deploymentEvent);
+
+                if (deploymentEvent.status === 'COMPLETE') this.deployEvents.push(deploymentEvent);
+              },
+              error: (error) => {
+                this.deploying = false;
+                this.error = error.message;
+              },
+              complete: async (contracts) => {},
+            },
+          }
+        );
+      } catch (err) {
+        console.warn(err.message);
+        this.error = err.message;
+        this.deploying = false;
+        return;
+      }
 
       if (!contracts && !contracts.LSP7DigitalAsset) {
         this.error = 'Error deploying LSP7DigitalAsset';
@@ -88,10 +98,20 @@ export default {
       const erc725LSP12IssuedAssets = new ERC725js(LSP12IssuedAssetsSchema, account, window.web3.currentProvider, options);
 
       // GET the current issued assets
-      const LSP12IssuedAssets = (await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]')).value;
+      let LSP12IssuedAssets;
+      try {
+        LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
+      } catch (err) {
+        console.warn(`Error when getting LSP12IssuedAssets[] data keys on: ${account}`, err.message);
+        this.error =
+          '❌ The NFT contract has been deployed and configured correctly. However, the app could not read your issued assets data on your profile. Are you using MetaMask (EOA)? ' + err.message;
+        this.deploying = false;
+        // We could write the asset address to localStorage so the rest of the app can still work.
+        return;
+      }
 
       // add new asset
-      LSP12IssuedAssets.push(deployedLSP7DigitalAssetContract.address);
+      LSP12IssuedAssets.value.push(deployedLSP7DigitalAssetContract.address);
 
       // https://docs.lukso.tech/standards/smart-contracts/interface-ids
       const LSP7InterfaceId = '0xe33f65c3';
@@ -99,7 +119,7 @@ export default {
       const encodedErc725Data = erc725LSP12IssuedAssets.encodeData([
         {
           keyName: 'LSP12IssuedAssets[]',
-          value: LSP12IssuedAssets,
+          value: LSP12IssuedAssets.value,
         },
         {
           keyName: 'LSP12IssuedAssetsMap:<address>',
@@ -109,10 +129,17 @@ export default {
       ]);
 
       // SEND transaction
-      const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0]);
-      const receipt = await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+      try {
+        const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, account);
+        const receipt = await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: account });
 
-      this.deployEvents.push({ receipt, type: 'TRANSACTION', functionName: 'setData' });
+        this.deployEvents.push({ receipt, type: 'TRANSACTION', functionName: 'setData' });
+      } catch (err) {
+        console.warn(err);
+        this.error = err.message;
+        this.deploying = false;
+        return;
+      }
 
       console.log('All set ✅🤙');
 
