@@ -52,8 +52,6 @@ onMounted(async () => {
   LSP4TokenSymbol.value = LSP4DigitalAsset[1].value;
   LSP4Metadata.value = LSP4DigitalAsset[2].value;
 
-  console.log('LSP4Metadata', LSP4DigitalAsset[2].value);
-
   const icons = LSP4DigitalAsset[2].value.LSP4Metadata.icon;
 
   if (icons && icons.length > 0) {
@@ -68,13 +66,14 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="preview-card" @click="$router.push(`/asset/${address}`)">
+    <div class="preview-card" @click="$router.push(creationType === 'LSP8' ? `/collection/${address}/mint` : `/asset/${address}/mint`)">
       <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
         <small class="supply">{{ creationType }} - Supply: {{ totalSupply }}</small>
       </div>
 
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
     </div>
-    <button class="button" @click="$router.push(`/asset/${address}`)">Mint</button>
+    <button v-if="creationType === 'LSP7'" class="button" @click="$router.push(`/asset/${address}/mint`)">Mint</button>
+    <button v-else-if="creationType === 'LSP8'" class="button" @click="$router.push(`/collection/${address}/mint`)">Mint in collection</button>
   </div>
 </template>

@@ -150,7 +150,7 @@ async function onSubmit() {
 
         <br /><br />
 
-        <input class="button-primary" type="submit" value="Create Token" />
+        <input class="button-primary" type="submit" value="Deploy NFT Collection" />
       </fieldset>
     </form>
   </div>
