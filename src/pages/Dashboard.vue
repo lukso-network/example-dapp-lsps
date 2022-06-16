@@ -1,27 +1,7 @@
 <script setup>
 import ProfileComponent from '../components/ProfileComponent.vue';
-import CreationsComponent from '../components/CreationsComponent.vue';
-import PortfolioComponent from '../components/PortfolioComponent.vue';
-</script>
-
-<script>
-export default {
-  data() {
-    return {
-      createdAssets: [],
-      ownedAssets: [],
-    };
-  },
-
-  // Executed when the login page is rendered
-  async mounted() {
-    // READ LSP12 and LSP5
-  },
-
-  methods: {
-    async createToken() {},
-  },
-};
+import LSP12IssuedAssetsComponent from '../components/LSP12IssuedAssetsComponent.vue';
+import LSP5ReceivedAssets from '../components/LSP5ReceivedAssets.vue';
 </script>
 
 <template>
@@ -33,7 +13,7 @@ export default {
       <button @click="$router.push('/createNFTCollection')">Create an NFT Collection</button>
     </div>
 
-    <CreationsComponent style="margin-top: 60px" />
-    <PortfolioComponent style="margin-top: 60px" />
+    <LSP12IssuedAssetsComponent style="margin-top: 60px" />
+    <LSP5ReceivedAssets style="margin-top: 60px" />
   </div>
 </template>
