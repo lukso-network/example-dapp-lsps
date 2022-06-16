@@ -77,7 +77,7 @@ async function onSubmit() {
   );
 
   if (!contracts && !contracts.LSP8IdentifiableDigitalAsset) {
-    this.error = 'Error deploying LSP7DigitalAsset';
+    error.value = 'Error deploying LSP7DigitalAsset';
     return;
   }
 
@@ -91,12 +91,20 @@ async function onSubmit() {
   const erc725LSP12IssuedAssets = new ERC725js(LSP12IssuedAssetsSchema, accounts[0], window.web3.currentProvider, options);
 
   // GET the current issued assets
-  const LSP12IssuedAssets = (await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]')).value;
-
-  console.log('LSP12IssuedAssets', LSP12IssuedAssets);
+  let LSP12IssuedAssets;
+  try {
+    LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
+  } catch (err) {
+    console.warn(`Error when getting LSP12IssuedAssets[] data keys on: ${account}`, err.message);
+    error.value =
+      '❌ The NFT contract has been deployed and configured correctly. However, the app could not read your issued assets data on your profile. Are you using MetaMask (EOA)? ' + err.message;
+    deploying.value = false;
+    // We could write the asset address to localStorage so the rest of the app can still work.
+    return;
+  }
 
   // add new asset
-  LSP12IssuedAssets.push(deployedLSP8IdentifiableDigitalAssetContract.address);
+  LSP12IssuedAssets.value.push(deployedLSP8IdentifiableDigitalAssetContract.address);
 
   // https://docs.lukso.tech/standards/smart-contracts/interface-ids
   const LSP8InterfaceId = '0x49399145';
@@ -104,7 +112,7 @@ async function onSubmit() {
   const encodedErc725Data = erc725LSP12IssuedAssets.encodeData([
     {
       keyName: 'LSP12IssuedAssets[]',
-      value: LSP12IssuedAssets,
+      value: LSP12IssuedAssets.value,
     },
     {
       keyName: 'LSP12IssuedAssetsMap:<address>',
@@ -114,8 +122,17 @@ async function onSubmit() {
   ]);
 
   // SEND transaction
-  const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0]);
-  await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+  try {
+    const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0]);
+    const receipt = await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+
+    deployEvents.value.push({ receipt, type: 'TRANSACTION', functionName: 'setData' });
+  } catch (err) {
+    console.warn(err);
+    error.value = err.message;
+    deploying.value = false;
+    return;
+  }
 
   console.log('All set ✅🤙');
 }
