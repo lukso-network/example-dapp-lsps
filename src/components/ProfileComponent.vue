@@ -54,6 +54,10 @@ export default {
         if (image.width >= 200 && image.width <= 500) return image;
       });
 
+      // If there is no image of the preferred size, take the default one
+      if (this.profileData.profileImage == undefined)
+        this.profileData.profileImage = metaData.LSP3Profile.profileImage[0];
+
       // change the IPFS path to a provider of our choice
       this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway);
 
