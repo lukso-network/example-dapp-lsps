@@ -11,8 +11,6 @@ import { BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 
 const route = useRoute();
 
-console.log('route', route.params.address);
-
 const LSP4TokenName = ref('');
 const LSP4TokenSymbol = ref('');
 const mintAmount = ref(0);

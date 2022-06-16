@@ -148,7 +148,7 @@ export default {
 
         <br /><br />
 
-        <input class="button-primary" type="submit" value="Create Token" />
+        <input class="button-primary" type="submit" value="Deploy Token" />
       </fieldset>
     </form>
   </div>

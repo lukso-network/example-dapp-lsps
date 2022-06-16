@@ -129,7 +129,7 @@ async function onSubmit() {
   </p>
 
   <div class="center">
-    <h2>Create your own <a href="https://docs.lukso.tech/standards/nft-2.0/LSP8-Identifiable-Digital-Asset" target="_blank">LSP8</a> collection</h2>
+    <h2>Create your own <a href="https://docs.lukso.tech/standards/nft-2.0/LSP8-Identifiable-Digital-Asset" target="_blank">LSP8 Identifiable Digital Asset</a> collection</h2>
 
     <br />
     <br />
@@ -150,7 +150,7 @@ async function onSubmit() {
 
         <br /><br />
 
-        <input class="button-primary" type="submit" value="Create Token" />
+        <input class="button-primary" type="submit" value="Deploy NFT Collection" />
       </fieldset>
     </form>
   </div>

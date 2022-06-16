@@ -111,7 +111,7 @@ export default {
     </div>
 
 
-    <!-- Ask the user to LOGIN, using the bowser extension -->
+    <!-- Ask the user to LOGIN, using the browser extension -->
     <div v-else-if="requiresLogin">
 
       <button @click="login">Log in to your browser extension</button>

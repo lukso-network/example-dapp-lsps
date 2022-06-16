@@ -2,9 +2,14 @@ import { createWebHashHistory, createRouter } from 'vue-router';
 
 import Login from './pages/Login.vue';
 import Dashboard from './pages/Dashboard.vue';
+
+// LSP7
 import CreateToken from './pages/CreateToken.vue';
-import AssetPage from './pages/AssetPage.vue';
+import MintAsset from './pages/MintAsset.vue';
+
+// LSP8
 import CreateNFTCollection from './pages/CreateNFTCollection.vue';
+import MintAssetInCollection from './pages/MintAssetInCollection.vue';
 
 const history = createWebHashHistory(process.env.BASE_URL);
 const routes = [
@@ -21,8 +26,12 @@ const routes = [
     component: CreateToken,
   },
   {
-    path: '/asset/:address',
-    component: AssetPage,
+    path: '/asset/:address/mint',
+    component: MintAsset,
+  },
+  {
+    path: '/collection/:address/mint',
+    component: MintAssetInCollection,
   },
   {
     path: '/createNFTCollection',
