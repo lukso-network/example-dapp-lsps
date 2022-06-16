@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       deploying: false,
+      isSuccess: false,
       deployEvents: [],
       error: false,
     };
@@ -25,6 +26,7 @@ export default {
     async onSubmit(e) {
       // GET the address from the browser extension
       const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
 
       // CONSTRUCT the meta data
       const LSP4MetaData = {
@@ -41,6 +43,7 @@ export default {
       // show the deploying status...
       this.deployEvents = [];
       this.deploying = true;
+      this.isSuccess = false;
 
       // DEPLOY the LSP7 token
       // https://docs.lukso.tech/tools/lsp-factoryjs/classes/lsp7-digital-asset
@@ -48,8 +51,8 @@ export default {
         {
           name: e.target.querySelector('input#name').value,
           symbol: e.target.querySelector('input#symbol').value,
-          controllerAddress: accounts[0], // the "issuer" of the asset, that is allowed to change meta data
-          creators: [accounts[0]], // Array of ERC725Account addresses that define the creators of the digital asset.
+          controllerAddress: account, // the "issuer" of the asset, that is allowed to change meta data
+          creators: [account], // Array of ERC725Account addresses that define the creators of the digital asset.
           isNFT: false, // Token decimals set to 18
           digitalAssetMetadata: LSP4MetaData,
         },
@@ -65,9 +68,7 @@ export default {
               this.deploying = false;
               this.error = error.message;
             },
-            complete: async (contracts) => {
-              this.deploying = false;
-            },
+            complete: async (contracts) => {},
           },
         }
       );
@@ -84,12 +85,10 @@ export default {
         ipfsGateway: IPFS_GATEWAY_BASE_URL,
       };
 
-      const erc725LSP12IssuedAssets = new ERC725js(LSP12IssuedAssetsSchema, accounts[0], window.web3.currentProvider, options);
+      const erc725LSP12IssuedAssets = new ERC725js(LSP12IssuedAssetsSchema, account, window.web3.currentProvider, options);
 
       // GET the current issued assets
       const LSP12IssuedAssets = (await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]')).value;
-
-      console.log('LSP12IssuedAssets', LSP12IssuedAssets);
 
       // add new asset
       LSP12IssuedAssets.push(deployedLSP7DigitalAssetContract.address);
@@ -111,9 +110,14 @@ export default {
 
       // SEND transaction
       const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0]);
-      await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+      const receipt = await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+
+      this.deployEvents.push({ receipt, type: 'TRANSACTION', functionName: 'setData' });
 
       console.log('All set ✅🤙');
+
+      this.deploying = false;
+      this.isSuccess = true;
     },
   },
 };
@@ -132,7 +136,7 @@ export default {
     <br />
     <br />
 
-    <form v-if="!deploying" @submit.prevent="onSubmit" class="left">
+    <form v-if="!deploying && deployEvents.length === 0" @submit.prevent="onSubmit" class="left">
       <fieldset>
         <label for="name">Name</label>
         <input type="text" placeholder="MyToken" id="name" required />
@@ -172,6 +176,10 @@ export default {
         Function called: {{ event.functionName }}()<br />
         Transaction hash: <a :href="`${BLOCKCHAIN_EXPLORER_BASE_URL}/tx/${event.receipt.transactionHash}`" target="_blank">{{ event.receipt.transactionHash }}</a>
       </span>
+    </div>
+
+    <div v-if="isSuccess" style="padding-top: 60px">
+      <h4>🎉 Success !</h4>
     </div>
   </div>
 </template>

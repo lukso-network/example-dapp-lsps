@@ -7,8 +7,10 @@ import LSP5ReceivedAssetsSchema from '@erc725/erc725.js/schemas/LSP5ReceivedAsse
 import OwnedCreationComponent from './OwnedCreationComponent.vue';
 
 const receivedAssets = ref([]);
+const isLoading = ref(false);
 
 onMounted(async () => {
+  isLoading.value = true;
   const accounts = await web3.eth.getAccounts();
 
   // If using the LUKSO browser extension, the Universal Profile smart contract address will be injected here.
@@ -18,18 +20,20 @@ onMounted(async () => {
   // GET the received assets directly from the Universal Profile smart contract
   try {
     // https://docs.lukso.tech/standards/universal-profile/lsp5-received-assets
-    const LSP5ReceivedAssets = (await erc725LSP12IssuedAssets.getData('LSP5ReceivedAssets[]')).value;
-    receivedAssets.value = LSP5ReceivedAssets;
+    const LSP5ReceivedAssets = await erc725LSP12IssuedAssets.getData('LSP5ReceivedAssets[]');
+    receivedAssets.value = LSP5ReceivedAssets.value;
   } catch (err) {
-    // address is an EOA?
-    // Using MetaMask?
+    console.warn(err);
   }
+
+  isLoading.value = false;
 });
 </script>
 
 <template>
   <div>
     <h2>Portfolio</h2>
+    <img v-if="receivedAssets.length === 0 && !isLoading" class="emptyLogo" src="/imgs/empty-up.png" alt="No creation" />
     <div class="grid">
       <OwnedCreationComponent :address="receivedAsset" v-for="receivedAsset in receivedAssets" :key="receivedAsset" />
     </div>
