@@ -69,10 +69,8 @@ export default {
     if (!this.profileData.profileImage && metaData.value.LSP3Profile.profileImage) {
       this.profileData.profileImage = metaData.value.LSP3Profile.profileImage[0];
       // change the IPFS path to a provider of our choice
-      this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway);
     }
-
-    console.log('profileData:', this.profileData);
+    this.profileData.profileImage.url = this.profileData.profileImage.url.replace('ipfs://', profile.options.ipfsGateway);
   },
 };
 </script>
