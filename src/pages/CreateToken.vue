@@ -9,9 +9,11 @@ import ERC725js from '@erc725/erc725.js';
 import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json'; // https://docs.lukso.tech/tools/erc725js/schemas
 
 import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
+import { NonceManager } from '@ethersproject/experimental';
 </script>
 
 <script>
+
 export default {
   data() {
     return {
@@ -21,6 +23,14 @@ export default {
       error: false,
     };
   },
+
+mounted(){
+  console.log("mounted");
+  document.getElementById("name").value = "";
+  document.getElementById("symbol").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("icon").value = null;
+},
 
   methods: {
     async onSubmit(e) {
@@ -145,6 +155,7 @@ export default {
 
       this.deploying = false;
       this.isSuccess = true;
+
     },
   },
 };
