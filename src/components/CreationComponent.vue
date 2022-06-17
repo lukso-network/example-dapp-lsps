@@ -65,7 +65,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="asset-wrapper">
     <div class="preview-card" @click="$router.push(creationType === 'LSP8' ? `/collection/${address}/mint` : `/asset/${address}/mint`)">
       <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
         <small class="supply">{{ creationType }} - Supply: {{ totalSupply }}</small>
