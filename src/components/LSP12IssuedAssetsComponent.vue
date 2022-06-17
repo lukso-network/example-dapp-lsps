@@ -36,7 +36,7 @@ onMounted(async () => {
 <template>
   <div>
     <h2>Your Creations</h2>
-    <img v-if="addresses.length === 0 && !isLoading" class="emptyLogo" src="../assets/empty-up.png" alt="No creation" />
+    <div v-if="addresses.length === 0 && !isLoading">No items</div>
     <div v-else class="grid">
       <CreationComponentVue :address="address" v-for="address in addresses" :key="address" />
     </div>

@@ -1,149 +1,147 @@
 body {
-    background-color: #f6f3f3;
+  background-color: #f6f3f3;
 }
 
 .app.container {
-    margin-top: 5em;
-    margin-bottom: 5em;
+  margin-top: 5em;
+  margin-bottom: 5em;
 }
 
 .center {
-    display: block;
-    text-align: center;
+  display: block;
+  text-align: center;
 }
 
 .left {
-    display: block;
-    text-align: left;
+  display: block;
+  text-align: left;
 }
 
 button,
 .button {
-    margin: 10px 20px;
+  margin: 10px 20px;
 }
 
 form {
-    margin: auto;
-    max-width: 500px;
+  margin: auto;
+  max-width: 500px;
 }
 
 .back {
-    position: absolute;
-    display: block;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    text-align: center;
-    top: -60px;
-    left: 20px;
-    font-size: 30px;
-    font-weight: 100;
-    font-family: 'Courier New', Courier, monospace;
-    color: rgb(102, 101, 101);
-    background-color: rgb(226, 224, 224);
-    cursor: pointer;
+  position: absolute;
+  display: block;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  text-align: center;
+  top: -60px;
+  left: 20px;
+  font-size: 30px;
+  font-weight: 100;
+  font-family: 'Courier New', Courier, monospace;
+  color: rgb(102, 101, 101);
+  background-color: rgb(226, 224, 224);
+  cursor: pointer;
 
-    &:hover,
-    &:focus {
-        background-color: rgb(200, 199, 199);
-    }
+  &:hover,
+  &:focus {
+    background-color: rgb(200, 199, 199);
+  }
 }
 
 .note,
 .warning {
-    &::before {
-        font-size: 12px;
-        margin-right: 10px;
-    }
+  &::before {
+    font-size: 12px;
+    margin-right: 10px;
+  }
 
-    background-color: white;
-    border: solid 1px white;
-    border-radius: 6px;
-    line-height: 18px;
-    overflow: hidden;
-    padding: 15px 20px;
+  background-color: white;
+  border: solid 1px white;
+  border-radius: 6px;
+  line-height: 18px;
+  overflow: hidden;
+  padding: 15px 20px;
 }
 
 .note {
-    &::before {
-        content: "📝";
-    }
+  &::before {
+    content: '📝';
+  }
 
-    background-color: #f0f7fb;
-    border-color: #3498db;
+  background-color: #f0f7fb;
+  border-color: #3498db;
 }
 
 .warning {
-    &::before {
-        content: "⚠️";
-    }
+  &::before {
+    content: '⚠️';
+  }
 
-    background-color: #fbf5f0;
-    border-color: #db6334;
+  background-color: #fbf5f0;
+  border-color: #db6334;
 }
 
 .profile {
-    min-height: 260px;
-    max-width: 400px;
+  min-height: 260px;
+  max-width: 400px;
+  margin: auto;
+
+  .username {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2em;
+  }
+
+  .description {
+    margin-top: 10px;
+    font-size: 1em;
+  }
+
+  .profileImage {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    background-color: rgb(196, 196, 196);
+    border-radius: 50%;
     margin: auto;
+    margin-bottom: 20px;
 
-    .username {
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 1.2em;
+    .image,
+    .identicon {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-size: cover;
+      border-radius: 50%;
+      overflow: hidden;
     }
 
-    .description {
-        margin-top: 10px;
-        font-size: 1em;
+    .image {
+      position: absolute;
+      top: 6px;
+      margin: 0 6px;
+      width: 108px;
+      height: 108px;
+      background-color: rgba(196, 196, 196, 0.5);
     }
-
-    .profileImage {
-        position: relative;
-        width: 120px;
-        height: 120px;
-        background-color: rgb(196, 196, 196);
-        border-radius: 50%;
-        margin: auto;
-        margin-bottom: 20px;
-
-        .image,
-        .identicon {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background-size: cover;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .image {
-            position: absolute;
-            top: 6px;
-            margin: 0 6px;
-            width: 108px;
-            height: 108px;
-            background-color: rgba(196, 196, 196, 0.5);
-        }
-    }
+  }
 }
 
 .grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-    gap: 20px;
-
-    
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  gap: 20px;
 }
 
-.asset-wrapper{
-    text-align: center;
+.asset-wrapper {
+  text-align: center;
 }
 
 .preview-card {
-    position: relative;
+  position: relative;
   display: block;
   overflow: hidden;
   width: 200px;
@@ -159,7 +157,7 @@ form {
   background-size: cover;
 
   box-shadow: 0 2px 6px 0 rgb(0 0 0 / 10%);
-  
+
   &:hover {
     transform: scale(1.05);
   }
@@ -175,20 +173,15 @@ form {
     font-weight: normal;
     line-height: 1.5;
   }
-  
+
   .image {
     width: 100%;
     height: 150px;
     background-position: center;
     background-size: cover;
   }
-  
+
   .infos {
     padding: 10px;
   }
-}
-.emptyLogo {
-    display: block;
-    margin: auto;
-    width: 150px;
 }
