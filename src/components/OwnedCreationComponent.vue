@@ -48,7 +48,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="asset-wrapper">
     <div class="preview-card" @click="showModal = !showModal">
       <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
         <small class="supply"> Your balance: {{ balanceOf }} </small>
