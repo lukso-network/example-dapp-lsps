@@ -5,6 +5,7 @@ import { isAddress } from 'web3-utils';
 import { BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
+import ProfilePreviewComponent from './ProfilePreviewComponent.vue';
 
 const props = defineProps({
   assetAddress: String,
@@ -13,7 +14,7 @@ const props = defineProps({
 
 defineEmits(['close']);
 
-const assetRecipient = ref('0x064dDAfBD0D3bdEd05De350129d56F84864952bb');
+const assetRecipient = ref('');
 const amountToSend = ref(1);
 const isLoading = ref(false);
 const txHash = ref('');
@@ -80,7 +81,7 @@ async function sendAsset() {
           </fieldset>
         </form>
 
-        <!-- TODO: add UP profile image here when address is valid -->
+        <ProfilePreviewComponent v-if="assetRecipient" :account="assetRecipient" />
 
         <p v-if="isLoading">Sending asset...</p>
         <p v-if="txHash">
