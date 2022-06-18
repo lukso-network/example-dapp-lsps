@@ -13,6 +13,7 @@ export default {
           url: '',
         },
       },
+      address: "0x",
       error: false,
     };
   },
@@ -25,7 +26,7 @@ export default {
 
     // TODO: make sure accounts is not empty!
     const account = accounts[0]; // set the first address as the Universal Profile address
-
+    this.address = account;
     // set the address, wether Universal Profile or EOA (MetaMask)
     this.profileData.address = account;
 
@@ -58,7 +59,7 @@ export default {
       ...metaData.value.LSP3Profile,
     };
 
-    console.log(this.profileData);
+    console.log("profiledaaaa", this.profileData);
 
     // GET the right image size for the profile image from the profile images array
     this.profileData.profileImage = _.find(this.profileData.profileImage, (image) => {
@@ -81,12 +82,14 @@ export default {
       <div class="identicon" v-bind:style="{ backgroundImage: 'url(' + profileData.identicon + ')' }"></div>
       <div class="image" v-bind:style="{ backgroundImage: 'url(' + profileData.profileImage?.url + ')' }"></div>
     </div>
-
     <span class="username" v-if="profileData.name"> @{{ profileData.name }} </span>
-    <p v-else-if="profileData.name === false" class="warning" id="extension">
+    <span class="username" v-else> @anonymous </span>
+    <p class="addressField" style="font-family: 'Courier New', Courier, monospace;"> {{ address }}</p>
+    <p v-if="profileData.name === false" class="warning" id="extension">
       You can use MetaMask with this dApp, but <br />
       we recommend trying it with the <br /><a href="https://docs.lukso.tech/guides/universal-profile/browser-extension/install-browser-extension">Universal Profile Browser Extension</a>.
     </p>
+
     <p class="description">
       {{ profileData.description }}
     </p>
