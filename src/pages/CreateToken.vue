@@ -120,14 +120,15 @@ mounted(){
         LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
       
         // Show EOA local storage warning
-        this.isEOA = true;
       }
 
       // add new asset
       LSP12IssuedAssets.value.push(deployedLSP7DigitalAssetContract.address);
 
       // if EOA, also add new asset list to localStorage
-      if(this.isEOA){
+      let bytecode = await web3.eth.getCode(account);
+  
+      if (bytecode === '0x') {
         localStorage.setItem("issuedAssets", JSON.stringify(LSP12IssuedAssets));
       }
 
@@ -158,7 +159,8 @@ mounted(){
         this.deploying = false;
         return;
       }
-
+      
+      this.isEOA = true;
       console.log('All set ✅🤙');
 
       this.deploying = false;
