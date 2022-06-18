@@ -44,12 +44,17 @@ onMounted(async () => {
       keyName: 'LSP8MetadataJSON:<bytes32>',
       dynamicKeyParts: props.tokenId,
     },
+    'LSP4Metadata',
   ]);
 
   LSP4TokenName.value = LSP4DigitalAsset[0].value;
   LSP4TokenSymbol.value = LSP4DigitalAsset[1].value;
   LSP4Metadata.value = LSP4DigitalAsset[2].value;
-  iconUrl.value = LSP4DigitalAsset[2].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
+  try {
+    iconUrl.value = LSP4DigitalAsset[2].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
+  } catch (error) {
+    iconUrl.value = LSP4DigitalAsset[3].value.LSP4Metadata.icon[0].url.replace('ipfs://', IPFS_GATEWAY_BASE_URL);
+  }
 });
 </script>
 
