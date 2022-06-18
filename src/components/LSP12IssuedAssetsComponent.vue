@@ -25,8 +25,11 @@ onMounted(async () => {
     // GET the current issued assets
     const LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
     addresses.value = LSP12IssuedAssets.value;
-  } catch (err) {
-    console.warn(err);
+  }
+  // is EOA, get assets from localStorage
+  catch (err) {
+    const LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
+    addresses.value = LSP12IssuedAssets.value;
   }
 
   isLoading.value = false;

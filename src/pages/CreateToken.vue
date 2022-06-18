@@ -19,6 +19,7 @@ export default {
     return {
       deploying: false,
       isSuccess: false,
+      isEOA: false,
       deployEvents: [],
       error: false,
     };
@@ -111,17 +112,24 @@ mounted(){
       let LSP12IssuedAssets;
       try {
         LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
-      } catch (err) {
-        console.warn(`Error when getting LSP12IssuedAssets[] data keys on: ${account}`, err.message);
-        this.error =
-          '❌ The NFT contract has been deployed and configured correctly. However, the app could not read your issued assets data on your profile. Are you using MetaMask (EOA)? ' + err.message;
-        this.deploying = false;
-        // We could write the asset address to localStorage so the rest of the app can still work.
-        return;
+      } 
+      // Is EOA
+      catch (err) {
+
+        // Load all assets that were stored in local storage
+        LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
+      
+        // Show EOA local storage warning
+        this.isEOA = true;
       }
 
       // add new asset
       LSP12IssuedAssets.value.push(deployedLSP7DigitalAssetContract.address);
+
+      // if EOA, also add new asset list to localStorage
+      if(this.isEOA){
+        localStorage.setItem("issuedAssets", JSON.stringify(LSP12IssuedAssets));
+      }
 
       // https://docs.lukso.tech/standards/smart-contracts/interface-ids
       const LSP7InterfaceId = '0xe33f65c3';
@@ -173,6 +181,10 @@ mounted(){
 
     <br />
     <br />
+
+    <div v-if="isEOA" class="warning" >
+      The NFT contract has been deployed and configured correctly,  but because you use MetaMask, the Asset can only be stored and written from local storage.
+    </div>
 
     <form v-if="!deploying && deployEvents.length === 0" @submit.prevent="onSubmit" class="left">
       <fieldset>

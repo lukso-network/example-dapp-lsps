@@ -22,8 +22,11 @@ onMounted(async () => {
     // https://docs.lukso.tech/standards/universal-profile/lsp5-received-assets
     const LSP5ReceivedAssets = await erc725LSP12IssuedAssets.getData('LSP5ReceivedAssets[]');
     receivedAssets.value = LSP5ReceivedAssets.value;
-  } catch (err) {
-    console.warn(err);
+  }
+  // is EOA, get assets from localStorage
+  catch (err) {
+    const LSP5ReceivedAssets = JSON.parse(localStorage.getItem("receivedAssets"));
+    receivedAssets.value = LSP5ReceivedAssets.value;
   }
 
   isLoading.value = false;

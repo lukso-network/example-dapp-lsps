@@ -42,6 +42,16 @@ async function onSubmit() {
     const receipt = await lsp7DigitalAssetContract.methods.mint(to, amount, force, data).send({ from: account });
     isLoading.value = false;
     txHash.value = receipt.transactionHash;
+
+    // Check if account is EOA
+    let bytecode = await web3.eth.getCode(account);
+  
+    // If account is EOA, add minted item to localStorage
+    if (bytecode === '0x') {
+      let LSP5ReceivedAssets = JSON.parse(localStorage.getItem("receivedAssets"));
+      LSP5ReceivedAssets.value.push(receipt.contractAddress); // Not sure of this statement works
+      localStorage.setItem("receivedAssets", JSON.stringify(LSP5ReceivedAssets));
+    }
   } catch (err) {
     error.value = err.message;
   }
