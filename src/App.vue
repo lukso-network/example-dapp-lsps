@@ -30,38 +30,14 @@ export default {
       let bytecode = await web3.eth.getCode(accounts[0]);
   
       if (bytecode === '0x') {
-        if (localStorage.getItem("receivedAssets") === null) {
-          localStorage.setItem('receivedAssets', JSON.stringify({"value":[], "account": accounts[0]}));
-        }
-        else{
-          const localStorageOwner = JSON.parse(localStorage.getItem("receivedAssets"));
-          
-          if(localStorageOwner.account !== accounts[0]){
-            localStorage.removeItem("receivedAssets");
-          }
-        }
-        
-        if (localStorage.getItem("issuedAssets") === null){
-          localStorage.setItem('issuedAssets', JSON.stringify({"value":[], "account": accounts[0]}));
-        }
-        else{
-          const localStorageOwner = JSON.parse(localStorage.getItem("issuedAssets"));
-          
-          if(localStorageOwner.account !== accounts[0]){
-            localStorage.removeItem("issuedAssets");
-          }
-        }
+        this.setupLocalStorage("receivedAssets", accounts[0]);
+        this.setupLocalStorage("issuedAssets", accounts[0])
       }
+
       // If address is Universal Profile, clear cache used before
       else{
-
-        if (localStorage.getItem("receivedAssets") !== null) {
-          localStorage.removeItem("receivedAssets");
-        }
-        
-        if (localStorage.getItem("issuedAssets") !== null){
-          localStorage.removeItem('issuedAssets');
-        }
+        this.clearLocalStorage("receivedAssets");
+        this.clearLocalStorage("issuedAssets");
       }
 
       // OTHERWISE go to the login page, if no browser extension can be detected, or no accounts are exposed
@@ -70,6 +46,26 @@ export default {
       this.$router.push('/login');
     }
   },
+  methods: {
+    setupLocalStorage(itemName, account){
+      if (localStorage.getItem(itemName) === null) {
+        localStorage.setItem(itemName, JSON.stringify({"value":[], "account": account}));
+      }
+      else{
+        const localStorageOwner = JSON.parse(localStorage.getItem(itemName));
+          
+        if(localStorageOwner.account !== account){
+          localStorage.removeItem(itemName);
+        }
+      }
+    },
+
+    clearLocalStorage(itemName){
+        if (localStorage.getItem(itemName) !== null) {
+          localStorage.removeItem(itemName);
+        }
+    }
+  }
 };
 </script>
 
