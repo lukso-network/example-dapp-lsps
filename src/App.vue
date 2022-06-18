@@ -34,7 +34,7 @@ export default {
           localStorage.setItem('receivedAssets', JSON.stringify({"value":[], "account": accounts[0]}));
         }
         else{
-          localStorageOwner = JSON.parse(localStorage.getItem("receivedAssets"));
+          const localStorageOwner = JSON.parse(localStorage.getItem("receivedAssets"));
           
           if(localStorageOwner.account !== accounts[0]){
             localStorage.removeItem("receivedAssets");
@@ -45,7 +45,7 @@ export default {
           localStorage.setItem('issuedAssets', JSON.stringify({"value":[], "account": accounts[0]}));
         }
         else{
-          localStorageOwner = JSON.parse(localStorage.getItem("issuedAssets"));
+          const localStorageOwner = JSON.parse(localStorage.getItem("issuedAssets"));
           
           if(localStorageOwner.account !== accounts[0]){
             localStorage.removeItem("issuedAssets");
