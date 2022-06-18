@@ -119,7 +119,6 @@ mounted(){
         // Load all assets that were stored in local storage
         LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
       
-        // Show EOA local storage warning
       }
 
       // add new asset
@@ -159,8 +158,9 @@ mounted(){
         this.deploying = false;
         return;
       }
-      
+      // Show EOA local storage warning
       this.isEOA = true;
+
       console.log('All set ✅🤙');
 
       this.deploying = false;
@@ -185,8 +185,11 @@ mounted(){
     <br />
 
     <div v-if="isEOA" class="warning" >
-      The NFT contract has been deployed and configured correctly,  but because you use MetaMask, the Asset can only be stored and written from local storage.
+      The NFT has been deployed and configured correctly,  but because of MetaMask, the asset can only be stored in the browser's local storage.
     </div>
+
+    <br />
+    <br />
 
     <form v-if="!deploying && deployEvents.length === 0" @submit.prevent="onSubmit" class="left">
       <fieldset>
