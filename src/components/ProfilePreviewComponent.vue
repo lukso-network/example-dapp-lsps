@@ -14,6 +14,7 @@ export default {
           url: '',
         },
       },
+      address: "0x",
       error: false,
     };
   },
@@ -35,7 +36,8 @@ export default {
   methods: {
     async updateProfile(account) {
       if (!isAddress(account)) {
-        this.profileData.description = 'Invalid Address';
+        this.profileData.description = '';
+        this.address = 'Invalid Address';
         this.profileData.profileImage.url = false;
         this.profileData.identicon = false;
         this.profileData.name = false;
@@ -43,9 +45,10 @@ export default {
         return;
       }
 
+      this.address = account;
+
       // generate identicon
       this.profileData.identicon = identicon(account); // generates a "data:image/png;base64,..."
-
       // INSTANTIATE erc725.js
       // window.web3 was set in App.vue
       const profile = new ERC725js(LSP3UniversalProfileMetaDataSchema, account, window.web3.currentProvider, {
@@ -90,6 +93,8 @@ export default {
     </div>
 
     <span class="username" v-if="profileData.name"> @{{ profileData.name }} </span>
+    <span class="username" v-else> @anonymous </span>
+    <p class="addressField" style="font-family: 'Courier New', Courier, monospace;"> {{ address }}</p>
     <p class="description" v-if="profileData.description">
       {{ profileData.description }}
     </p>
