@@ -154,7 +154,9 @@ export default {
         return;
       }
       // Show EOA local storage warning
-      this.isEOA = true;
+      if (bytecode === '0x') {
+        this.isEOA = true;
+      }
 
       this.deploying = false;
       this.isSuccess = true;
