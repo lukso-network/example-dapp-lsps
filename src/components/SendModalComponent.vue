@@ -20,6 +20,7 @@ const assetRecipient = ref('');
 const amountToSend = ref(1);
 const isLoading = ref(false);
 const txHash = ref('');
+const forceParameter = ref(false);
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
@@ -57,7 +58,7 @@ async function sendLSP7Token(accountAddress, assetAddress) {
   const from = accountAddress;
   const to = assetRecipient.value;
   const amount = parseInt(amountToSend.value, 10);
-  const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const force = forceParameter.value; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
 
   isLoading.value = true;
@@ -105,6 +106,10 @@ async function sendLSP8Token(accountAddress, assetAddress) {
             <div v-if="isLsp7">
               <label for="amount">Amount:</label>
               <input type="number" placeholder="0x..." v-model="amountToSend" id="amount" required />
+              <div>
+                <input style="position: absolute; margin: 5px 0px 0px -100px" type="checkbox" v-model="forceParameter" id="force" value="false" />
+                <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
+              </div>
             </div>
 
             <br /><br />
