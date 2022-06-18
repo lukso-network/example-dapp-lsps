@@ -17,6 +17,7 @@ const deploying = ref(false);
 const error = ref(false);
 const isEOA = ref(false);
 const deployEvents = ref([]);
+const isSuccess = ref(false);
 
 // Form fields
 const tokenName = ref('');
@@ -139,8 +140,7 @@ async function onSubmit(e) {
 
   // Show EOA local storage warning
   isEOA.value = true;
-
-  console.log('All set ✅🤙');
+  isSuccess.value = true;
 }
 </script>
 
@@ -207,6 +207,10 @@ async function onSubmit(e) {
         Function called: {{ event.functionName }}()<br />
         Transaction hash: <a :href="`${BLOCKCHAIN_EXPLORER_BASE_URL}/tx/${event.receipt.transactionHash}`" target="_blank">{{ event.receipt.transactionHash }}</a>
       </span>
+    </div>
+
+    <div v-if="isSuccess" style="padding-top: 60px">
+      <h4>🎉 Success !</h4>
     </div>
   </div>
 </template>

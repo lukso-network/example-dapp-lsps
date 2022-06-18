@@ -25,7 +25,6 @@ export default {
   },
 
   mounted() {
-    console.log('mounted');
     document.getElementById('name').value = '';
     document.getElementById('symbol').value = '';
     document.getElementById('description').value = '';
@@ -159,8 +158,6 @@ export default {
       }
       // Show EOA local storage warning
       this.isEOA = true;
-
-      console.log('All set ✅🤙');
 
       this.deploying = false;
       this.isSuccess = true;
