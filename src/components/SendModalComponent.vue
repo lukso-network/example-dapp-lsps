@@ -11,6 +11,7 @@ const props = defineProps({
   assetName: String,
   isLsp7: Boolean,
   isLsp8: Boolean,
+  tokenId: String,
 });
 
 defineEmits(['close']);
@@ -22,6 +23,7 @@ const txHash = ref('');
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
+  console.log(props.tokenId);
 });
 
 async function sendAsset() {
@@ -55,7 +57,7 @@ async function sendLSP7Token(accountAddress, assetAddress) {
   const from = accountAddress;
   const to = assetRecipient.value;
   const amount = parseInt(amountToSend.value, 10);
-  const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
 
   isLoading.value = true;
@@ -73,16 +75,14 @@ async function sendLSP8Token(accountAddress, assetAddress) {
   const lsp8IdentifiableDigitalAssetContract = new window.web3.eth.Contract(LSP8IdentifiableDigitalAsset.abi, assetAddress);
   const tokenIds = await lsp8IdentifiableDigitalAssetContract.methods.tokenIdsOf(accountAddress).call();
 
-  const tokenId = tokenIds[0];
-
   const from = accountAddress;
   const to = assetRecipient.value;
-  const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
 
   isLoading.value = true;
 
-  const receipt = await lsp8IdentifiableDigitalAssetContract.methods.transfer(from, to, tokenId, force, data).send({ from: accountAddress });
+  const receipt = await lsp8IdentifiableDigitalAssetContract.methods.transfer(from, to, props.tokenId, force, data).send({ from: accountAddress });
 
   isLoading.value = false;
 
