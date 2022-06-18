@@ -15,6 +15,7 @@ import { IPFS_GATEWAY_API_BASE_URL, IPFS_GATEWAY_BASE_URL, BLOCKCHAIN_EXPLORER_B
 
 const deploying = ref(false);
 const error = ref(false);
+const isEOA = ref(false);
 const deployEvents = ref([]);
 
 // Form fields
@@ -65,12 +66,10 @@ async function onSubmit() {
         },
         error: (error) => {
           console.error(error);
-          deploying.value = false;
         },
         complete: (contracts) => {
           console.log('Deployment Complete');
           console.log(contracts.LSP8IdentifiableDigitalAsset);
-          deploying.value = false;
         },
       },
     }
@@ -94,17 +93,22 @@ async function onSubmit() {
   let LSP12IssuedAssets;
   try {
     LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
-  } catch (err) {
-    console.warn(`Error when getting LSP12IssuedAssets[] data keys on: ${account}`, err.message);
-    error.value =
-      '❌ The NFT contract has been deployed and configured correctly. However, the app could not read your issued assets data on your profile. Are you using MetaMask (EOA)? ' + err.message;
-    deploying.value = false;
-    // We could write the asset address to localStorage so the rest of the app can still work.
-    return;
+  } 
+  // Is EOA
+  catch (err) {
+    // Load all assets that were stored in local storage
+    LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
   }
 
   // add new asset
   LSP12IssuedAssets.value.push(deployedLSP8IdentifiableDigitalAssetContract.address);
+
+  // if EOA, also add new asset list to localStorage
+  let bytecode = await web3.eth.getCode(accounts[0]);
+  
+  if (bytecode === '0x') {
+    localStorage.setItem("issuedAssets", JSON.stringify(LSP12IssuedAssets));
+  }
 
   // https://docs.lukso.tech/standards/smart-contracts/interface-ids
   const LSP8InterfaceId = '0x49399145';
@@ -130,9 +134,11 @@ async function onSubmit() {
   } catch (err) {
     console.warn(err);
     error.value = err.message;
-    deploying.value = false;
     return;
   }
+
+  // Show EOA local storage warning
+  isEOA.value = true;
 
   console.log('All set ✅🤙');
 }
@@ -147,6 +153,13 @@ async function onSubmit() {
 
   <div class="center">
     <h2>Create your own <a href="https://docs.lukso.tech/standards/nft-2.0/LSP8-Identifiable-Digital-Asset" target="_blank">LSP8 Identifiable Digital Asset</a> collection</h2>
+
+    <br />
+    <br />
+
+    <div v-if="isEOA" class="warning" >
+      The NFT Collection has been deployed and configured correctly,  but because of MetaMask, the asset can only be stored in the browser's local storage.
+    </div>
 
     <br />
     <br />

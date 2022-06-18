@@ -16,7 +16,7 @@ const LSP4TokenName = ref('');
 const LSP4TokenSymbol = ref('');
 
 const description = ref('');
-const tokenId = ref(''); // Shoulb be bytes32
+const tokenId = ref(''); // Should be bytes32
 
 const mintEvents = ref([]);
 const error = ref('');
@@ -36,7 +36,7 @@ async function onSubmit() {
   const lsp8IdentifiableDigitalAssetContract = new window.web3.eth.Contract(LSP8Mintable.abi, route.params.address);
 
   const to = account;
-  const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
 
   try {
@@ -96,8 +96,19 @@ async function onSubmit() {
     return;
   }
 
+  // Check if account is EOA
+  let bytecode = await web3.eth.getCode(account);
+
+  // If account is EOA, add minted item to localStorage
+  if (bytecode === '0x') {
+    let LSP5ReceivedAssets = JSON.parse(localStorage.getItem("receivedAssets"));
+    LSP5ReceivedAssets.value.push(route.params.address);
+    localStorage.setItem("receivedAssets", JSON.stringify(LSP5ReceivedAssets));
+  }
+
   isLoading.value = false;
   isSuccess.value = true;
+
 }
 
 onMounted(async () => {
