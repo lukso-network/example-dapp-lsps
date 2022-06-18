@@ -23,7 +23,7 @@ const tokenName = ref('');
 const tokenSymbol = ref('');
 const description = ref('');
 
-async function onSubmit() {
+async function onSubmit(e) {
   // show the deploying status...
   deployEvents.value = [];
   deploying.value = true;
@@ -35,7 +35,7 @@ async function onSubmit() {
   // CONSTRUCT the meta data
   const LSP4MetaData = {
     description: description.value,
-    // icon: e.target.querySelector('input#icon').files[0],
+    icon: e.target.querySelector('input#icon').files[0],
     links: [],
     images: [],
     assets: [],
@@ -76,7 +76,7 @@ async function onSubmit() {
   );
 
   if (!contracts && !contracts.LSP8IdentifiableDigitalAsset) {
-    error.value = 'Error deploying LSP7DigitalAsset';
+    error.value = 'Error deploying LSP8IdentifiableDigitalAsset';
     return;
   }
 
@@ -174,6 +174,9 @@ async function onSubmit() {
 
         <label for="description">Description</label>
         <textarea placeholder="The Token that will change the world..." id="description" required></textarea>
+
+        <label for="icon">Token Icon</label>
+        <input type="file" id="icon" accept="image/*" required />
 
         <!-- <label for="icon">Token Icon</label>
         <input type="file" id="icon" accept="image/*" required /> -->

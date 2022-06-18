@@ -19,6 +19,8 @@ const LSP4TokenSymbol = ref('');
 const LSP4Metadata = ref();
 const iconUrl = ref('');
 const balanceOf = ref();
+const isLsp7 = ref(false);
+const isLsp8 = ref(false);
 
 const showModal = ref(false);
 
@@ -44,6 +46,7 @@ onMounted(async () => {
   // READ supply with web3js
   const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.address);
   balanceOf.value = await lsp4DigitalAssetContract.methods.balanceOf(account).call();
+  [isLsp7.value, isLsp8.value] = await Promise.all([lsp4DigitalAssetContract.methods.supportsInterface('0xe33f65c3').call(), lsp4DigitalAssetContract.methods.supportsInterface('0x49399145').call()]);
 });
 </script>
 
@@ -57,6 +60,6 @@ onMounted(async () => {
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
     </div>
     <button class="button" @click="showModal = !showModal">Send</button>
-    <SendModalComponent v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
+    <SendModalComponent :is-lsp7="true" :is-lsp8="false" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
   </div>
 </template>
