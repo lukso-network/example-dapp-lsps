@@ -13,7 +13,6 @@ import { NonceManager } from '@ethersproject/experimental';
 </script>
 
 <script>
-
 export default {
   data() {
     return {
@@ -25,13 +24,13 @@ export default {
     };
   },
 
-mounted(){
-  console.log("mounted");
-  document.getElementById("name").value = "";
-  document.getElementById("symbol").value = "";
-  document.getElementById("description").value = "";
-  document.getElementById("icon").value = null;
-},
+  mounted() {
+    console.log('mounted');
+    document.getElementById('name').value = '';
+    document.getElementById('symbol').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('icon').value = null;
+  },
 
   methods: {
     async onSubmit(e) {
@@ -165,7 +164,6 @@ mounted(){
 
       this.deploying = false;
       this.isSuccess = true;
-
     },
   },
 };

@@ -2,14 +2,15 @@
 import { onMounted, defineProps, defineEmits, ref } from 'vue';
 import { isAddress } from 'web3-utils';
 
-import { BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
-
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 import ProfilePreviewComponent from './ProfilePreviewComponent.vue';
+import LSP8IdentifiableDigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP8IdentifiableDigitalAsset.json';
 
 const props = defineProps({
   assetAddress: String,
   assetName: String,
+  isLsp7: Boolean,
+  isLsp8: Boolean,
 });
 
 defineEmits(['close']);
@@ -32,33 +33,62 @@ async function sendAsset() {
   txHash.value = '';
   console.log('Sending asset to:', assetRecipient.value);
 
-  const accounts = await web3.eth.getAccounts();
+  const accounts = await window.web3.eth.getAccounts();
   const account = accounts[0];
 
-  // https://docs.lukso.tech/standards/smart-contracts/lsp7-digital-asset
-  const lsp7DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.assetAddress);
-
   try {
-    // https://docs.lukso.tech/standards/smart-contracts/lsp7-digital-asset#transfer
-    const from = account;
-    const to = assetRecipient.value;
-    const amount = parseInt(amountToSend.value, 10);
-    const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
-    const data = '0x';
-
-    isLoading.value = true;
-    const receipt = await lsp7DigitalAssetContract.methods.transfer(from, to, amount, force, data).send({ from: account });
-    isLoading.value = false;
-
-    console.info('Transaction receipt:', receipt);
-
-    txHash.value = receipt.transactionHash;
+    if (props.isLsp7) {
+      await sendLSP7Token(account, props.assetAddress);
+    } else if (props.isLsp8) {
+      await sendLSP8Token(account, props.assetAddress);
+    }
   } catch (err) {
     // It can fail if the recipient is not a UP (cf. force option)
     isLoading.value = false;
 
     console.warn(err);
   }
+}
+
+// https://docs.lukso.tech/standards/smart-contracts/lsp7-digital-asset#transfer
+async function sendLSP7Token(accountAddress, assetAddress) {
+  const from = accountAddress;
+  const to = assetRecipient.value;
+  const amount = parseInt(amountToSend.value, 10);
+  const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const data = '0x';
+
+  isLoading.value = true;
+
+  const lsp7DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, assetAddress);
+  const receipt = await lsp7DigitalAssetContract.methods.transfer(from, to, amount, force, data).send({ from: accountAddress });
+  isLoading.value = false;
+
+  console.info('Transaction receipt:', receipt);
+
+  txHash.value = receipt.transactionHash;
+}
+
+async function sendLSP8Token(accountAddress, assetAddress) {
+  const lsp8IdentifiableDigitalAssetContract = new window.web3.eth.Contract(LSP8IdentifiableDigitalAsset.abi, assetAddress);
+  const tokenIds = await lsp8IdentifiableDigitalAssetContract.methods.tokenIdsOf(accountAddress).call();
+
+  const tokenId = tokenIds[0];
+
+  const from = accountAddress;
+  const to = assetRecipient.value;
+  const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const data = '0x';
+
+  isLoading.value = true;
+
+  const receipt = await lsp8IdentifiableDigitalAssetContract.methods.transfer(from, to, tokenId, force, data).send({ from: accountAddress });
+
+  isLoading.value = false;
+
+  console.info('Transaction receipt:', receipt);
+
+  txHash.value = receipt.transactionHash;
 }
 </script>
 
@@ -72,8 +102,10 @@ async function sendAsset() {
             <label for="assetRecipient">Recipient:</label>
             <input type="text" placeholder="0x..." v-model="assetRecipient" id="assetRecipient" required />
 
-            <label for="amount">Amount:</label>
-            <input type="number" placeholder="0x..." v-model="amountToSend" id="amount" required />
+            <div v-if="isLsp7">
+              <label for="amount">Amount:</label>
+              <input type="number" placeholder="0x..." v-model="amountToSend" id="amount" required />
+            </div>
 
             <br /><br />
 

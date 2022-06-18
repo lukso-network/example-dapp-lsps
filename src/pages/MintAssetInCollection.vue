@@ -38,9 +38,10 @@ async function onSubmit() {
   const to = account;
   const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
+  const paddedTokenId = web3.utils.padRight(tokenId.value, 64);
 
   try {
-    const receipt = await lsp8IdentifiableDigitalAssetContract.methods.mint(to, tokenId.value, force, data).send({ from: account });
+    const receipt = await lsp8IdentifiableDigitalAssetContract.methods.mint(to, paddedTokenId, force, data).send({ from: account });
     mintEvents.value.push({ stepName: '✅ Mint the NFT on the LSP8 smart contract', functionName: 'mint', receipt });
   } catch (err) {
     error.value = err.message;
@@ -79,7 +80,7 @@ async function onSubmit() {
 
   const encodedErc725Data = erc725js.encodeData({
     keyName: 'LSP8MetadataJSON:<bytes32>',
-    dynamicKeyParts: tokenId.value,
+    dynamicKeyParts: paddedTokenId,
     value: {
       json: metadata.json,
       url: metadata.url,
