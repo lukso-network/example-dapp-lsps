@@ -31,17 +31,30 @@ export default {
   
       if (bytecode === '0x') {
         if (localStorage.getItem("receivedAssets") === null) {
-          const receivedAssets = [];
-          localStorage.setItem('receivedAssets', JSON.stringify({"value":[]}));
+          localStorage.setItem('receivedAssets', JSON.stringify({"value":[], "account": accounts[0]}));
+        }
+        else{
+          localStorageOwner = JSON.parse(localStorage.getItem("receivedAssets"));
+          
+          if(localStorageOwner.account !== accounts[0]){
+            localStorage.removeItem("receivedAssets");
+          }
         }
         
         if (localStorage.getItem("issuedAssets") === null){
-          const issuedAssets = [];
-          localStorage.setItem('issuedAssets', JSON.stringify({"value":[]}));
+          localStorage.setItem('issuedAssets', JSON.stringify({"value":[], "account": accounts[0]}));
+        }
+        else{
+          localStorageOwner = JSON.parse(localStorage.getItem("issuedAssets"));
+          
+          if(localStorageOwner.account !== accounts[0]){
+            localStorage.removeItem("issuedAssets");
+          }
         }
       }
       // If address is Universal Profile, clear cache used before
       else{
+
         if (localStorage.getItem("receivedAssets") !== null) {
           localStorage.removeItem("receivedAssets");
         }
