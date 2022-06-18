@@ -36,7 +36,7 @@ async function onSubmit() {
 
     const to = account;
     const amount = parseInt(mintAmount.value, 10);
-    const force = false; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+    const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
     const data = '0x';
 
     const receipt = await lsp7DigitalAssetContract.methods.mint(to, amount, force, data).send({ from: account });
@@ -49,7 +49,7 @@ async function onSubmit() {
     // If account is EOA, add minted item to localStorage
     if (bytecode === '0x') {
       let LSP5ReceivedAssets = JSON.parse(localStorage.getItem("receivedAssets"));
-      LSP5ReceivedAssets.value.push(receipt.contractAddress); // Not sure of this statement works
+      LSP5ReceivedAssets.value.push(route.params.address);
       localStorage.setItem("receivedAssets", JSON.stringify(LSP5ReceivedAssets));
     }
   } catch (err) {
