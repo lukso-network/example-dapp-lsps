@@ -54,7 +54,7 @@ onMounted(async () => {
   <div class="asset-wrapper">
     <div class="preview-card" @click="showModal = !showModal">
       <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
-        <small class="supply"> Your balance: {{ balanceOf }} </small>
+        <small class="supply"> Balance: {{ balanceOf }} </small>
       </div>
 
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
