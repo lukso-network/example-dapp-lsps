@@ -45,21 +45,15 @@ export default {
     } catch (e) {
       // IF it fails its likely NO Universal Profile, or a simple EOA (MetaMask)
 
-      console.log(e);
-      console.warn('You are not logged in with a Universal Profile, your users user experience just degraded by 256%');
       this.profileData.name = false;
       return;
     }
-
-    console.log('metaData', metaData);
 
     this.profileData = {
       // merge profileData with fetched profile data
       ...this.profileData,
       ...metaData.value.LSP3Profile,
     };
-
-    console.log("profiledaaaa", this.profileData);
 
     // GET the right image size for the profile image from the profile images array
     this.profileData.profileImage = _.find(this.profileData.profileImage, (image) => {

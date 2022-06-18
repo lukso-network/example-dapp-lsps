@@ -36,7 +36,6 @@ onMounted(async () => {
   // FETCH Metadata with erc725js
   const erc725Asset = new ERC725js([...LSP4DigitalAssetSchema, LSP8MetadataJSONSchema], props.address, window.web3.currentProvider, options);
 
-  // console.log(props.tokenId);
   const LSP4DigitalAsset = await erc725Asset.fetchData([
     'LSP4TokenName',
     'LSP4TokenSymbol',
