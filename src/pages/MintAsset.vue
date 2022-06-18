@@ -17,16 +17,26 @@ const mintAmount = ref(0);
 const txHash = ref('');
 const error = ref('');
 const isLoading = ref(false);
+const forceParameter = ref(false);
+const isMinterEOA = ref(false);
 
 async function onSubmit() {
+  const accounts = await web3.eth.getAccounts();
+  const account = accounts[0];
+
+  let minterBytecode = await web3.eth.getCode(account);
+
   if (mintAmount.value === 0) {
     return;
   }
+  // If recipient is EOA, force is mandatory
+  else if (minterBytecode === '0x' && forceParameter.value === false) {
+    isMinterEOA.value = true;
+    return;
+  }
 
+  isMinterEOA.value = false;
   console.log(`Minting ${mintAmount.value} new tokens.`);
-
-  const accounts = await web3.eth.getAccounts();
-  const account = accounts[0];
 
   // https://docs.lukso.tech/standards/smart-contracts/lsp7-digital-asset
   const lsp7DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, route.params.address);
@@ -36,7 +46,7 @@ async function onSubmit() {
 
     const to = account;
     const amount = parseInt(mintAmount.value, 10);
-    const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+    const force = forceParameter.value; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
     const data = '0x';
 
     const receipt = await lsp7DigitalAssetContract.methods.mint(to, amount, force, data).send({ from: account });
@@ -45,12 +55,12 @@ async function onSubmit() {
 
     // Check if account is EOA
     let bytecode = await web3.eth.getCode(account);
-  
+
     // If account is EOA, add minted item to localStorage
     if (bytecode === '0x') {
-      let LSP5ReceivedAssets = JSON.parse(localStorage.getItem("receivedAssets"));
+      let LSP5ReceivedAssets = JSON.parse(localStorage.getItem('receivedAssets'));
       LSP5ReceivedAssets.value.push(route.params.address);
-      localStorage.setItem("receivedAssets", JSON.stringify(LSP5ReceivedAssets));
+      localStorage.setItem('receivedAssets', JSON.stringify(LSP5ReceivedAssets));
     }
   } catch (err) {
     error.value = err.message;
@@ -78,9 +88,14 @@ onMounted(async () => {
 
     <form @submit.prevent="onSubmit" class="left">
       <fieldset>
+        <p class="warning" v-if="isMinterEOA">Your address is an EOA, please allow transfer to EOA.</p>
+
         <label for="amount">Amount</label>
         <input type="number" v-model="mintAmount" placeholder="1" id="amount" required />
-
+        <div>
+          <input style="position: absolute; margin: 5px 0px 0px 0px" type="checkbox" v-model="forceParameter" id="force" value="false" />
+          <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
+        </div>
         <br /><br />
 
         <input class="button-primary" type="submit" :value="`Mint ${mintAmount} ${LSP4TokenSymbol}`" />

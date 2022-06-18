@@ -41,6 +41,7 @@ async function sendAsset() {
     return;
   }
 
+  isRecepientEOA.value = false;
   txHash.value = '';
   console.log('Sending asset to:', assetRecipient.value);
 

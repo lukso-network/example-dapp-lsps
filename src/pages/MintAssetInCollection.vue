@@ -22,10 +22,22 @@ const mintEvents = ref([]);
 const error = ref('');
 const isLoading = ref(false);
 const isSuccess = ref(false);
+const forceParameter = ref(false);
+const isMinterEOA = ref(false);
 
 async function onSubmit(e) {
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
+
+  let minterBytecode = await web3.eth.getCode(account);
+
+  // If recipient is EOA, force is mandatory
+  if (minterBytecode === '0x' && forceParameter.value === false) {
+    isMinterEOA.value = true;
+    return;
+  }
+
+  isMinterEOA.value = false;
 
   isLoading.value = true;
   isSuccess.value = false;
@@ -36,7 +48,7 @@ async function onSubmit(e) {
   const lsp8IdentifiableDigitalAssetContract = new window.web3.eth.Contract(LSP8Mintable.abi, route.params.address);
 
   const to = account;
-  const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
+  const force = forceParameter.value; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
   const paddedTokenId = web3.utils.padRight(web3.utils.stringToHex(tokenId.value), 64);
 
@@ -132,6 +144,8 @@ onMounted(async () => {
 
     <form v-if="!isLoading && mintEvents.length === 0" @submit.prevent="onSubmit" class="left">
       <fieldset>
+        <p class="warning" v-if="isMinterEOA">Your address is an EOA, please allow transfer to EOA.</p>
+
         <label for="tokenId">Token ID</label>
         <textarea placeholder="My Token" v-model="tokenId" id="tokenId" required maxlength="30"></textarea>
 
@@ -140,7 +154,10 @@ onMounted(async () => {
 
         <label for="icon">Token Icon</label>
         <input type="file" id="icon" accept="image/*" required />
-
+        <div style="margin-top: 10px">
+          <input style="position: absolute; margin: 5px 0px 0px 0px" type="checkbox" v-model="forceParameter" id="force" value="false" />
+          <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
+        </div>
         <br />
         <br />
 
