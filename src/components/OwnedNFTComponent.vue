@@ -66,6 +66,6 @@ onMounted(async () => {
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
     </div>
     <button class="button" @click="showModal = !showModal">Send</button>
-    <SendModalComponent :is-lsp7="false" :is-lsp8="true" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
+    <SendModalComponent :token-id="tokenId" :is-lsp7="false" :is-lsp8="true" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
   </div>
 </template>

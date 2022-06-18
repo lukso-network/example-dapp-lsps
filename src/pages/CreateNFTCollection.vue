@@ -93,11 +93,10 @@ async function onSubmit(e) {
   let LSP12IssuedAssets;
   try {
     LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
-  } 
-  // Is EOA
-  catch (err) {
+  } catch (err) {
+    // Is EOA
     // Load all assets that were stored in local storage
-    LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
+    LSP12IssuedAssets = JSON.parse(localStorage.getItem('issuedAssets'));
   }
 
   // add new asset
@@ -105,9 +104,9 @@ async function onSubmit(e) {
 
   // if EOA, also add new asset list to localStorage
   let bytecode = await web3.eth.getCode(accounts[0]);
-  
+
   if (bytecode === '0x') {
-    localStorage.setItem("issuedAssets", JSON.stringify(LSP12IssuedAssets));
+    localStorage.setItem('issuedAssets', JSON.stringify(LSP12IssuedAssets));
   }
 
   // https://docs.lukso.tech/standards/smart-contracts/interface-ids
@@ -128,7 +127,7 @@ async function onSubmit(e) {
   // SEND transaction
   try {
     const profileContract = new window.web3.eth.Contract(LSP0ERC725Account.abi, accounts[0]);
-    const receipt = await profileContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
+    const receipt = await profileContract.methods['setData(bytes32[],bytes[])'](encodedErc725Data.keys, encodedErc725Data.values).send({ from: accounts[0] });
 
     deployEvents.value.push({ receipt, type: 'TRANSACTION', functionName: 'setData' });
   } catch (err) {
@@ -157,9 +156,7 @@ async function onSubmit(e) {
     <br />
     <br />
 
-    <div v-if="isEOA" class="warning" >
-      The NFT Collection has been deployed and configured correctly,  but because of MetaMask, the asset can only be stored in the browser's local storage.
-    </div>
+    <div v-if="isEOA" class="warning">The NFT Collection has been deployed and configured correctly, but because of MetaMask, the asset can only be stored in the browser's local storage.</div>
 
     <br />
     <br />

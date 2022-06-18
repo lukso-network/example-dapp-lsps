@@ -23,7 +23,7 @@ const error = ref('');
 const isLoading = ref(false);
 const isSuccess = ref(false);
 
-async function onSubmit() {
+async function onSubmit(e) {
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
 
@@ -38,7 +38,7 @@ async function onSubmit() {
   const to = account;
   const force = true; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
-  const paddedTokenId = web3.utils.padRight(tokenId.value, 64);
+  const paddedTokenId = web3.utils.padRight(web3.utils.stringToHex(tokenId.value), 64);
 
   try {
     const receipt = await lsp8IdentifiableDigitalAssetContract.methods.mint(to, paddedTokenId, force, data).send({ from: account });
@@ -54,7 +54,7 @@ async function onSubmit() {
   const metadata = await LSP4DigitalAssetMetadata.uploadMetadata(
     {
       description: description.value,
-      // TODO: add icon
+      icon: e.target.querySelector('input#icon').files[0],
     },
     {
       ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
@@ -89,7 +89,7 @@ async function onSubmit() {
 
   // SEND transaction
   try {
-    const receipt = await lsp8IdentifiableDigitalAssetContract.methods.setData(encodedErc725Data.keys, encodedErc725Data.values).send({ from: account });
+    const receipt = await lsp8IdentifiableDigitalAssetContract.methods['setData(bytes32[],bytes[])'](encodedErc725Data.keys, encodedErc725Data.values).send({ from: account });
     mintEvents.value.push({ stepName: '✅ Update the ERC725Y key/value (LSP8MetadataJSON:<bytes32>)', functionName: 'setData', receipt });
   } catch (err) {
     isLoading.value = false;
@@ -102,14 +102,13 @@ async function onSubmit() {
 
   // If account is EOA, add minted item to localStorage
   if (bytecode === '0x') {
-    let LSP5ReceivedAssets = JSON.parse(localStorage.getItem("receivedAssets"));
+    let LSP5ReceivedAssets = JSON.parse(localStorage.getItem('receivedAssets'));
     LSP5ReceivedAssets.value.push(route.params.address);
-    localStorage.setItem("receivedAssets", JSON.stringify(LSP5ReceivedAssets));
+    localStorage.setItem('receivedAssets', JSON.stringify(LSP5ReceivedAssets));
   }
 
   isLoading.value = false;
   isSuccess.value = true;
-
 }
 
 onMounted(async () => {
@@ -133,14 +132,14 @@ onMounted(async () => {
 
     <form v-if="!isLoading && mintEvents.length === 0" @submit.prevent="onSubmit" class="left">
       <fieldset>
-        <label for="tokenId">Token ID (bytes32)</label>
-        <textarea placeholder="0x" v-model="tokenId" id="tokenId" required></textarea>
+        <label for="tokenId">Token ID</label>
+        <textarea placeholder="My Token" v-model="tokenId" id="tokenId" required maxlength="30"></textarea>
 
         <label for="description">Description</label>
         <textarea placeholder="The Token that will change the world..." v-model="description" id="description" required></textarea>
 
-        <!-- <label for="icon">Token Icon</label>
-        <input type="file" id="icon" accept="image/*" required /> -->
+        <label for="icon">Token Icon</label>
+        <input type="file" id="icon" accept="image/*" required />
 
         <br />
         <br />
