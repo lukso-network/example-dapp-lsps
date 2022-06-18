@@ -13,7 +13,7 @@ export default {
           url: '',
         },
       },
-      address: "0x",
+      address: "",
       error: false,
     };
   },
