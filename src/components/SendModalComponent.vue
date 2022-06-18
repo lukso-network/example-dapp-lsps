@@ -21,6 +21,7 @@ const amountToSend = ref(1);
 const isLoading = ref(false);
 const txHash = ref('');
 const forceParameter = ref(false);
+const isRecepientEOA = ref(false);
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
@@ -28,8 +29,15 @@ onMounted(async () => {
 });
 
 async function sendAsset() {
+  let recipientBytecode = await web3.eth.getCode(assetRecipient.value);
+
   if (!isAddress(assetRecipient.value)) {
     console.warn(`The address: ${assetRecipient.value} is not valid.`);
+    return;
+  }
+  // If recipient is EOA, force is mandatory
+  else if (recipientBytecode === '0x' && forceParameter.value === false) {
+    isRecepientEOA.value = true;
     return;
   }
 
@@ -107,6 +115,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
               <label for="amount">Amount:</label>
               <input type="number" placeholder="0x..." v-model="amountToSend" id="amount" required />
               <div>
+                <p class="warning" v-if="isRecepientEOA">Your recipient is an EOA, please allow transfer to EOA.</p>
                 <input style="position: absolute; margin: 5px 0px 0px -100px" type="checkbox" v-model="forceParameter" id="force" value="false" />
                 <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
               </div>
