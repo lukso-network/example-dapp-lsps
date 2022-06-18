@@ -116,9 +116,13 @@ async function sendLSP8Token(accountAddress, assetAddress) {
               <label for="amount">Amount:</label>
               <input type="number" placeholder="0x..." v-model="amountToSend" id="amount" required />
               <div>
-                <p class="warning" v-if="isRecepientEOA">Your recipient is an EOA, please allow transfer to EOA.</p>
-                <input style="position: absolute; margin: 5px 0px 0px -100px" type="checkbox" v-model="forceParameter" id="force" value="false" />
-                <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
+                <span
+                  title="Tokens and NFTs can only be send to Universal Profiles or smart contracts that implement a Universal Receiver by default. To sent it to an EOA, you need to use the force parameter."
+                >
+                  <p class="warning" v-if="isRecepientEOA">Your recipient is an EOA, please allow transfer to EOA.</p>
+                  <input style="position: absolute; margin: 5px 0px 0px -100px" type="checkbox" v-model="forceParameter" id="force" value="false" />
+                  <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
+                </span>
               </div>
             </div>
 
