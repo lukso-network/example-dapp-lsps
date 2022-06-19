@@ -145,7 +145,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
           ✅ Success: Transaction Hash:
           <small
             ><a :href="`https://blockscout.com/lukso/l14/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
-          ><br />
+          ><br /><br />
           <input class="button-primary" type="button" value="Close" @click="$emit('close')" />
         </p>
       </div>
@@ -169,7 +169,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 0% auto; /* 0% from the top and centered */
+  margin: -2% auto; /* 0% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 90%;
