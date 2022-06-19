@@ -156,7 +156,7 @@ onMounted(async () => {
         <input type="file" id="icon" accept="image/*" required />
         <div style="margin-top: 10px">
           <span
-            title="Tokens and NFTs can only be send to Universal Profiles or smart contracts that implement a Universal Receiver by default. To sent it to an EOA, you need to use the force parameter."
+            title="Tokens and NFTs can only be sent to Universal Profiles or smart contracts that implement a Universal Receiver by default. To sent it to an EOA, you need to use the force parameter."
           >
             <input style="position: absolute; margin: 5px 0px 0px 0px" type="checkbox" v-model="forceParameter" id="force" value="false" />
             <label style="margin-left: 20px" for="force">Allow transfer to EOA</label>
