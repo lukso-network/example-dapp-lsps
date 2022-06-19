@@ -97,7 +97,11 @@ async function sendLSP8Token(accountAddress, assetAddress) {
   <div class="modal" @click="$emit('close')">
     <div class="modal-content" @click.stop="">
       <div class="container">
-        <h2>Send {{ props.assetName }}</h2>
+        <h2 style="margin-bottom: 0px">Send {{ props.assetName }}</h2>
+        <small>{{ props.assetAddress }}</small>
+
+        <h2></h2>
+
         <form @submit.prevent="sendAsset">
           <fieldset>
             <label for="assetRecipient">Recipient:</label>
