@@ -108,7 +108,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
       <div class="container">
         <h2 style="margin-bottom: 0px">Send {{ props.assetName }}</h2>
         <small
-          ><a :href="`https://blockscout.com/lukso/l14/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
+          ><a :href="`https://explorer.execution.l16.lukso.network/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
         >
 
         <h2></h2>
@@ -144,7 +144,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
         <p v-if="txHash">
           ✅ Success: Transaction Hash:
           <small
-            ><a :href="`https://blockscout.com/lukso/l14/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
+            ><a :href="`https://explorer.execution.l16.lukso.network/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
           ><br /><br />
           <input class="button-primary" type="button" value="Close" @click="$emit('close')" />
         </p>
