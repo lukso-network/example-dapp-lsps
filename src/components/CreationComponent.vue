@@ -66,8 +66,8 @@ onMounted(async () => {
 
 <template>
   <div class="asset-wrapper">
-    <div class="preview-card" @click="$router.push(creationType === 'LSP8' ? `/collection/${address}/mint` : `/asset/${address}/mint`)">
-      <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
+    <div class="preview-card" :style="{ boxShadow: creationType === 'LSP7' ? 'none' : '' }" @click="$router.push(creationType === 'LSP8' ? `/collection/${address}/mint` : `/asset/${address}/mint`)">
+      <div class="image" :style="{ backgroundImage: `url(${iconUrl})`, borderRadius: creationType === 'LSP7' ? '50%' : '' }">
         <small class="supply">{{ creationType }} - Supply: {{ totalSupply }}</small>
       </div>
 

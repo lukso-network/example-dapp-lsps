@@ -53,8 +53,8 @@ onMounted(async () => {
 
 <template>
   <div class="asset-wrapper">
-    <div class="preview-card" @click="showModal = !showModal">
-      <div class="image" :style="{ backgroundImage: `url(${iconUrl})` }">
+    <div class="preview-card" :style="{ boxShadow: isLsp7 ? 'none' : '' }" @click="showModal = !showModal">
+      <div class="image" :style="{ backgroundImage: `url(${iconUrl})`, borderRadius: isLsp7 ? '50%' : '' }">
         <small class="supply"> Balance: {{ balanceOf }} </small>
       </div>
 
