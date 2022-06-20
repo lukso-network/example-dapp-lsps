@@ -60,7 +60,7 @@ onMounted(async () => {
 
   // READ supply with web3js
   const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.address); // LSP7 and LSP8 both share the totalSupply function.
-  totalSupply.value = await lsp4DigitalAssetContract.methods.totalSupply().call();
+  totalSupply.value = web3.utils.fromWei(await lsp4DigitalAssetContract.methods.totalSupply().call());
 });
 </script>
 
@@ -73,7 +73,7 @@ onMounted(async () => {
 
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
     </div>
-    <button v-if="creationType === 'LSP7'" class="button" style="width: 200px;" @click="$router.push(`/asset/${address}/mint`)">Mint</button>
-    <button v-else-if="creationType === 'LSP8'" class="button" style="width: 200px;" @click="$router.push(`/collection/${address}/mint`)">Mint in collection</button>
+    <button v-if="creationType === 'LSP7'" class="button" style="width: 200px" @click="$router.push(`/asset/${address}/mint`)">Mint</button>
+    <button v-else-if="creationType === 'LSP8'" class="button" style="width: 200px" @click="$router.push(`/collection/${address}/mint`)">Mint in collection</button>
   </div>
 </template>

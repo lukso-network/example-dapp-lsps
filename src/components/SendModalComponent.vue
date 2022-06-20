@@ -66,7 +66,7 @@ async function sendAsset() {
 async function sendLSP7Token(accountAddress, assetAddress) {
   const from = accountAddress;
   const to = assetRecipient.value;
-  const amount = parseInt(amountToSend.value, 10);
+  const amount = web3.utils.toWei(amountToSend.value.toString());
   const force = forceParameter.value; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
   const data = '0x';
 
