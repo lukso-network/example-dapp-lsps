@@ -14,7 +14,7 @@ export default {
           url: '',
         },
       },
-      address: "",
+      address: '',
       error: false,
     };
   },
@@ -93,8 +93,7 @@ export default {
     </div>
 
     <span class="username" v-if="profileData.name"> @{{ profileData.name }} </span>
-    <span class="username" v-else> @anonymous </span>
-    <p class="addressField" style="font-family: 'Courier New', Courier, monospace;"> {{ address }}</p>
+    <p class="addressField" style="font-family: 'Courier New', Courier, monospace">{{ address }}</p>
     <p class="description" v-if="profileData.description">
       {{ profileData.description }}
     </p>

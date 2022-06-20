@@ -13,7 +13,7 @@ export default {
           url: '',
         },
       },
-      address: "",
+      address: '',
       error: false,
     };
   },
@@ -77,8 +77,7 @@ export default {
       <div class="image" v-bind:style="{ backgroundImage: 'url(' + profileData.profileImage?.url + ')' }"></div>
     </div>
     <span class="username" v-if="profileData.name"> @{{ profileData.name }} </span>
-    <span class="username" v-else> @anonymous </span>
-    <p class="addressField" style="font-family: 'Courier New', Courier, monospace;"> {{ address }}</p>
+    <p class="addressField" style="font-family: 'Courier New', Courier, monospace">{{ address }}</p>
     <p v-if="profileData.name === false" class="warning" id="extension">
       You can use MetaMask with this dApp, but <br />
       we recommend trying it with the <br /><a href="https://docs.lukso.tech/guides/universal-profile/browser-extension/install-browser-extension">Universal Profile Browser Extension</a>.
