@@ -11,6 +11,8 @@ import { LSPFactory } from '@lukso/lsp-factory.js';
 import ERC725js from '@erc725/erc725.js';
 import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json'; // https://docs.lukso.tech/tools/erc725js/schemas
 
+import LSP8Mintable_0_5_0 from '../contracts/LSP8Mintable_0_5_0.json';
+
 import { IPFS_GATEWAY_API_BASE_URL, IPFS_GATEWAY_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 
 const deploying = ref(false);
@@ -57,6 +59,9 @@ async function onSubmit(e) {
     },
     {
       ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
+      LSP8IdentifiableDigitalAsset: {
+        version: LSP8Mintable_0_5_0.bytecode,
+      },
       onDeployEvents: {
         next: (deploymentEvent) => {
           console.log(deploymentEvent);

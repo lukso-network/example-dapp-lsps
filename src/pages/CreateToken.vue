@@ -8,6 +8,8 @@ import { LSPFactory } from '@lukso/lsp-factory.js';
 import ERC725js from '@erc725/erc725.js';
 import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json'; // https://docs.lukso.tech/tools/erc725js/schemas
 
+import LSP7Mintable_0_5_0 from '../contracts/LSP7Mintable_0_5_0.json';
+
 import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 </script>
 
@@ -69,6 +71,9 @@ export default {
             digitalAssetMetadata: LSP4MetaData,
           },
           {
+            LSP7DigitalAsset: {
+              version: LSP7Mintable_0_5_0.bytecode,
+            },
             ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
             onDeployEvents: {
               next: (deploymentEvent) => {
