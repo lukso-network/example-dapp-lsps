@@ -45,7 +45,7 @@ async function onSubmit() {
     isLoading.value = true;
 
     const to = account;
-    const amount = parseInt(mintAmount.value, 10);
+    const amount = web3.utils.toWei(mintAmount.value.toString());
     const force = forceParameter.value; // When set to TRUE, to may be any address; when set to FALSE to must be a contract that supports LSP1 UniversalReceiver and not revert.
     const data = '0x';
 
@@ -55,7 +55,6 @@ async function onSubmit() {
 
     // Check if account is EOA
     let bytecode = await web3.eth.getCode(account);
-
     // If account is EOA, add minted item to localStorage
     if (bytecode === '0x') {
       let LSP5ReceivedAssets = JSON.parse(localStorage.getItem('receivedAssets'));
