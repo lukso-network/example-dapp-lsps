@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@erc725/erc725.js": "^0.14.1",
-    "@lukso/lsp-factory.js": "^2.3.0",
+    "@lukso/lsp-factory.js": "^2.3.1",
     "@lukso/lsp-smart-contracts": "^0.6.0",
     "ethereum-blockies-base64": "^1.0.2",
     "underscore": "^1.13.2",
