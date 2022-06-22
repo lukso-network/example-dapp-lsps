@@ -60,6 +60,10 @@ export default {
 
       let contracts;
 
+      // l14 relayer uses smart contracts v0.5.0
+      const chainId = await web3.eth.getChainId();
+      const version = chainId === 22 ? LSP7Mintable_0_5_0.bytecode : null;
+
       try {
         contracts = await factory.LSP7DigitalAsset.deploy(
           {
@@ -72,7 +76,7 @@ export default {
           },
           {
             LSP7DigitalAsset: {
-              version: LSP7Mintable_0_5_0.bytecode,
+              version,
             },
             ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
             onDeployEvents: {
@@ -85,7 +89,10 @@ export default {
                 this.deploying = false;
                 this.error = error.message;
               },
-              complete: async (contracts) => {},
+              complete: async (contracts) => {
+                console.log('Deployment Complete');
+                console.log(contracts.LSP7DigitalAsset);
+              },
             },
           }
         );

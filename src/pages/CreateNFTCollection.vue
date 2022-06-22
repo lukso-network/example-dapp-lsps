@@ -47,6 +47,10 @@ async function onSubmit(e) {
   // INITIATE the LSPFactory
   const factory = new LSPFactory(web3.currentProvider);
 
+  // l14 relayer uses smart contracts v0.5.0
+  const chainId = await web3.eth.getChainId();
+  const version = chainId === 22 ? LSP8Mintable_0_5_0.bytecode : null;
+
   // DEPLOY the LSP8 contract
   // https://docs.lukso.tech/tools/lsp-factoryjs/classes/lsp8-identifiable-digital-asset
   const contracts = await factory.LSP8IdentifiableDigitalAsset.deploy(
@@ -60,7 +64,7 @@ async function onSubmit(e) {
     {
       ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
       LSP8IdentifiableDigitalAsset: {
-        version: LSP8Mintable_0_5_0.bytecode,
+        version,
       },
       onDeployEvents: {
         next: (deploymentEvent) => {
