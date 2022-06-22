@@ -44,12 +44,13 @@ async function onSubmit(e) {
     assets: [],
   };
 
-  // INITIATE the LSPFactory
-  const factory = new LSPFactory(web3.currentProvider);
+  const chainId = await web3.eth.getChainId();
 
   // l14 relayer uses smart contracts v0.5.0
-  const chainId = await web3.eth.getChainId();
   const version = chainId === 22 ? LSP8Mintable_0_5_0.bytecode : null;
+
+  // INITIATE the LSPFactory
+  const factory = new LSPFactory(web3.currentProvider, { chainId });
 
   // DEPLOY the LSP8 contract
   // https://docs.lukso.tech/tools/lsp-factoryjs/classes/lsp8-identifiable-digital-asset

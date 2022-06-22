@@ -47,9 +47,6 @@ export default {
         assets: [],
       };
 
-      // INITIATE the LSPFactory
-      const factory = new LSPFactory(web3.currentProvider);
-
       // show the deploying status...
       this.deployEvents = [];
       this.deploying = true;
@@ -63,6 +60,9 @@ export default {
       // l14 relayer uses smart contracts v0.5.0
       const chainId = await web3.eth.getChainId();
       const version = chainId === 22 ? LSP7Mintable_0_5_0.bytecode : null;
+
+      // INITIATE the LSPFactory
+      const factory = new LSPFactory(web3.currentProvider, { chainId });
 
       try {
         contracts = await factory.LSP7DigitalAsset.deploy(
