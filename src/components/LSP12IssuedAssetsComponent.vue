@@ -10,7 +10,7 @@ import CreationComponentVue from './CreationComponent.vue';
 const addresses = ref([]);
 const isLoading = ref(false);
 
-onMounted(async () => {
+onMounted(async () => { 
   isLoading.value = true;
   const accounts = await web3.eth.getAccounts();
   // TODO: make sure accounts is not empty!
@@ -25,10 +25,9 @@ onMounted(async () => {
     // GET the current issued assets
     const LSP12IssuedAssets = await erc725LSP12IssuedAssets.getData('LSP12IssuedAssets[]');
     addresses.value = LSP12IssuedAssets.value;
-  }
-  // is EOA, get assets from localStorage
-  catch (err) {
-    const LSP12IssuedAssets = JSON.parse(localStorage.getItem("issuedAssets"));
+  } catch (err) {
+    // is EOA, get assets from localStorage
+    const LSP12IssuedAssets = JSON.parse(localStorage.getItem('issuedAssets'));
     addresses.value = LSP12IssuedAssets.value;
   }
 
