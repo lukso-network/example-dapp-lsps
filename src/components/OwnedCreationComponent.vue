@@ -1,12 +1,12 @@
 <script setup>
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, defineEmits } from 'vue';
 
 import ERC725js from '@erc725/erc725.js';
 import LSP4DigitalAssetSchema from '@erc725/erc725.js/schemas/LSP4DigitalAsset.json';
 
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 
-import { IPFS_GATEWAY_BASE_URL } from '../constants';
+import { IPFS_GATEWAY_BASE_URL, INTERFACE_IDS } from '../constants';
 
 import SendModalComponent from './SendModalComponent.vue';
 
@@ -25,6 +25,24 @@ const isLsp8 = ref(false);
 const showModal = ref(false);
 
 onMounted(async () => {
+  refreshToken();
+});
+
+const emit = defineEmits(['remove-asset']);
+
+async function handleTokensSent() {
+  await refreshToken();
+}
+
+const handleModalClose = () => {
+  showModal.value = false;
+
+  if (!parseInt(balanceOf.value)) {
+    emit('remove-asset', { assetAddress: props.address });
+  }
+};
+
+const refreshToken = async () => {
   const options = {
     ipfsGateway: IPFS_GATEWAY_BASE_URL,
   };
@@ -47,8 +65,11 @@ onMounted(async () => {
   const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.address);
   balanceOf.value = web3.utils.fromWei(await lsp4DigitalAssetContract.methods.balanceOf(account).call());
 
-  [isLsp7.value, isLsp8.value] = await Promise.all([lsp4DigitalAssetContract.methods.supportsInterface('0xe33f65c3').call(), lsp4DigitalAssetContract.methods.supportsInterface('0x49399145').call()]);
-});
+  [isLsp7.value, isLsp8.value] = await Promise.all([
+    lsp4DigitalAssetContract.methods.supportsInterface(INTERFACE_IDS.LSP7DigitalAsset).call(),
+    lsp4DigitalAssetContract.methods.supportsInterface(INTERFACE_IDS.LSP8IdentifiableDigitalAsset).call(),
+  ]);
+};
 </script>
 
 <template>
@@ -61,6 +82,6 @@ onMounted(async () => {
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
     </div>
     <button class="button" style="width: 200px" @click="showModal = !showModal">Send</button>
-    <SendModalComponent :is-lsp7="true" :is-lsp8="false" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
+    <SendModalComponent @tokens-sent="handleTokensSent" :is-lsp7="true" :is-lsp8="false" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="handleModalClose" />
   </div>
 </template>

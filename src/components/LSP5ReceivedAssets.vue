@@ -8,9 +8,38 @@ import LSP8IdentifiableDigitalAsset from '@lukso/lsp-smart-contracts/artifacts/L
 import OwnedNFTComponent from './OwnedNFTComponent.vue';
 import OwnedCreationComponent from './OwnedCreationComponent.vue';
 
+import { INTERFACE_IDS } from '../constants';
+
 const receivedAssets = ref([]);
 const isLoading = ref(false);
 const receivedTokens = ref([]);
+
+async function handleRemoveAsset({ tokenId, assetAddress }) {
+  isLoading.value = true;
+
+  const currentReceivedTokens = receivedTokens.value;
+
+  // Remove asset from receievd tokens
+  const updatedRecievedTokens = currentReceivedTokens.filter(function (token) {
+    if (!tokenId) {
+      return token.assetAddress !== assetAddress;
+    }
+
+    return token.tokenId !== tokenId;
+  });
+  receivedTokens.value = updatedRecievedTokens;
+
+  // Update received assets 
+  receivedAssets.value = updatedRecievedTokens.reduce(function (acc, token) {
+    if (!acc.includes(token.assetAddress)) {
+      acc.push(token.assetAddress);
+    }
+
+    return acc;
+  }, []);
+
+  isLoading.value = false;
+}
 
 onMounted(async () => {
   isLoading.value = true;
@@ -36,8 +65,8 @@ onMounted(async () => {
   receivedAssets.value.forEach(async (receivedAsset) => {
     const lsp8IdentifiableDigitalAssetContract = new window.web3.eth.Contract(LSP8IdentifiableDigitalAsset.abi, receivedAsset);
     const [isLSP7, isLSP8] = await Promise.all([
-      lsp8IdentifiableDigitalAssetContract.methods.supportsInterface('0xe33f65c3').call(),
-      lsp8IdentifiableDigitalAssetContract.methods.supportsInterface('0x49399145').call(),
+      lsp8IdentifiableDigitalAssetContract.methods.supportsInterface(INTERFACE_IDS.LSP7DigitalAsset).call(),
+      lsp8IdentifiableDigitalAssetContract.methods.supportsInterface(INTERFACE_IDS.LSP8IdentifiableDigitalAsset).call(),
     ]);
 
     if (isLSP8) {
@@ -61,8 +90,6 @@ onMounted(async () => {
     }
   });
 
-  console.log('receivedTokens', receivedTokens.value);
-
   isLoading.value = false;
 });
 </script>
@@ -74,8 +101,8 @@ onMounted(async () => {
     <div v-if="receivedAssets.length === 0 && !isLoading">No items</div>
     <div v-else class="grid">
       <div v-for="receivedToken in receivedTokens" :key="receivedToken.tokenId">
-        <OwnedCreationComponent v-if="receivedToken.isLSP7" :address="receivedToken.assetAddress" />
-        <OwnedNFTComponent v-if="receivedToken.isLSP8" :address="receivedToken.assetAddress" :token-id="receivedToken.tokenId" />
+        <OwnedCreationComponent @remove-asset="handleRemoveAsset" v-if="receivedToken.isLSP7" :address="receivedToken.assetAddress" />
+        <OwnedNFTComponent @remove-asset="handleRemoveAsset" v-if="receivedToken.isLSP8" :address="receivedToken.assetAddress" :token-id="receivedToken.tokenId" />
       </div>
     </div>
   </div>

@@ -14,7 +14,7 @@ const props = defineProps({
   tokenId: String,
 });
 
-defineEmits(['close']);
+const emit = defineEmits(['close', 'tokens-sent']);
 
 const assetRecipient = ref('');
 const amountToSend = ref(1);
@@ -22,10 +22,14 @@ const isLoading = ref(false);
 const txHash = ref('');
 const forceParameter = ref(false);
 const isRecepientEOA = ref(false);
+const wasAssetSent = ref(false);
+
+const handleModalClose = () => {
+  emit('close', wasAssetSent.value);
+};
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
-  console.log(props.tokenId);
 });
 
 async function sendAsset() {
@@ -54,6 +58,9 @@ async function sendAsset() {
     } else if (props.isLsp8) {
       await sendLSP8Token(account, props.assetAddress);
     }
+
+    wasAssetSent.value = true;
+    emit('tokens-sent');
   } catch (err) {
     // It can fail if the recipient is not a UP (cf. force option)
     isLoading.value = false;
@@ -103,14 +110,13 @@ async function sendLSP8Token(accountAddress, assetAddress) {
 </script>
 
 <template>
-  <div class="modal" @click="$emit('close')">
+  <div class="modal" @click="handleModalClose">
     <div class="modal-content" @click.stop="">
       <div class="container">
         <h2 style="margin-bottom: 0px">Send {{ props.assetName }}</h2>
         <small
           ><a :href="`https://blockscout.com/lukso/l14/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
         >
-
         <h2></h2>
 
         <form @submit.prevent="sendAsset">
@@ -146,7 +152,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
           <small
             ><a :href="`https://blockscout.com/lukso/l14/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
           ><br /><br />
-          <input class="button-primary" type="button" value="Close" @click="$emit('close')" />
+          <input class="button-primary" type="button" value="Close" @click="handleModalClose" />
         </p>
       </div>
     </div>

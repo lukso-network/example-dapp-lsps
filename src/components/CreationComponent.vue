@@ -23,14 +23,18 @@ onMounted(async () => {
     ipfsGateway: IPFS_GATEWAY_BASE_URL,
   };
 
-  const supportsInterfaceContract = new window.web3.eth.Contract([COMMON_ABIS.supportsInterface], props.address);
-  const isLSP7 = await supportsInterfaceContract.methods.supportsInterface(INTERFACE_IDS.LSP7DigitalAsset).call();
   // CHECK contract's interface
+  const supportsInterfaceContract = new window.web3.eth.Contract([COMMON_ABIS.supportsInterface], props.address);
+
+  const [isLSP7, isLSP8] = await Promise.all([
+    await supportsInterfaceContract.methods.supportsInterface(INTERFACE_IDS.LSP7DigitalAsset).call(),
+    await supportsInterfaceContract.methods.supportsInterface(INTERFACE_IDS.LSP8IdentifiableDigitalAsset).call(),
+  ]);
+
   try {
     if (isLSP7) {
       creationType.value = 'LSP7';
     } else {
-      const isLSP8 = await supportsInterfaceContract.methods.supportsInterface(INTERFACE_IDS.LSP8IdentifiableDigitalAsset).call();
       if (isLSP8) {
         creationType.value = 'LSP8';
       } else {
