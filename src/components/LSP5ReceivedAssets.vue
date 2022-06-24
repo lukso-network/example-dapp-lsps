@@ -19,13 +19,24 @@ async function handleRemoveAsset({ tokenId, assetAddress }) {
 
   const currentReceivedTokens = receivedTokens.value;
 
-  receivedTokens.value = currentReceivedTokens.filter(function (token) {
+  // Remove asset from receievd tokens
+  const updatedRecievedTokens = currentReceivedTokens.filter(function (token) {
     if (!tokenId) {
       return token.assetAddress !== assetAddress;
     }
 
     return token.tokenId !== tokenId;
   });
+  receivedTokens.value = updatedRecievedTokens;
+
+  // Update received assets 
+  receivedAssets.value = updatedRecievedTokens.reduce(function (acc, token) {
+    if (!acc.includes(token.assetAddress)) {
+      acc.push(token.assetAddress);
+    }
+
+    return acc;
+  }, []);
 
   isLoading.value = false;
 }
