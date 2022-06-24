@@ -23,11 +23,10 @@ onMounted(async () => {
     ipfsGateway: IPFS_GATEWAY_BASE_URL,
   };
 
+  const supportsInterfaceContract = new window.web3.eth.Contract([COMMON_ABIS.supportsInterface], props.address);
+  const isLSP7 = await supportsInterfaceContract.methods.supportsInterface(INTERFACE_IDS.LSP7DigitalAsset).call();
   // CHECK contract's interface
   try {
-    const supportsInterfaceContract = new window.web3.eth.Contract([COMMON_ABIS.supportsInterface], props.address);
-    const isLSP7 = await supportsInterfaceContract.methods.supportsInterface(INTERFACE_IDS.LSP7DigitalAsset).call();
-
     if (isLSP7) {
       creationType.value = 'LSP7';
     } else {
@@ -60,7 +59,7 @@ onMounted(async () => {
 
   // READ supply with web3js
   const lsp4DigitalAssetContract = new window.web3.eth.Contract(LSP7DigitalAsset.abi, props.address); // LSP7 and LSP8 both share the totalSupply function.
-  totalSupply.value = web3.utils.fromWei(await lsp4DigitalAssetContract.methods.totalSupply().call());
+  totalSupply.value = isLSP7 ? web3.utils.fromWei(await lsp4DigitalAssetContract.methods.totalSupply().call()) : await lsp4DigitalAssetContract.methods.totalSupply().call();
 });
 </script>
 
