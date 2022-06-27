@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, defineEmits } from 'vue';
 
 import ERC725js from '@erc725/erc725.js';
 import LSP4DigitalAssetSchema from '@erc725/erc725.js/schemas/LSP4DigitalAsset.json';
@@ -27,6 +27,16 @@ const LSP8MetadataJSONSchema = {
   valueType: 'bytes',
   valueContent: 'JSONURL',
 };
+
+const emit = defineEmits(['remove-asset']);
+
+async function handleModalClose(wasAssetSent) {
+  showModal.value = false;
+
+  if (wasAssetSent) {
+    emit('remove-asset', { assetAddress: props.address, tokenId: props.tokenId });
+  }
+}
 
 onMounted(async () => {
   const options = {
@@ -65,6 +75,6 @@ onMounted(async () => {
       <div class="infos">{{ LSP4TokenName }} ({{ LSP4TokenSymbol }})</div>
     </div>
     <button class="button" @click="showModal = !showModal">Send</button>
-    <SendModalComponent :token-id="tokenId" :is-lsp7="false" :is-lsp8="true" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" @close="showModal = false" />
+    <SendModalComponent @close="handleModalClose" :token-id="tokenId" :is-lsp7="false" :is-lsp8="true" v-if="showModal" :asset-address="props.address" :asset-name="LSP4TokenName" />
   </div>
 </template>

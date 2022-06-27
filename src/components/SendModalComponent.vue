@@ -14,7 +14,7 @@ const props = defineProps({
   tokenId: String,
 });
 
-defineEmits(['close']);
+const emit = defineEmits(['close', 'tokens-sent']);
 
 const assetRecipient = ref('');
 const amountToSend = ref(1);
@@ -24,10 +24,14 @@ const forceParameter = ref(false);
 const isRecepientEOA = ref(false);
 const isL16 = ref(false);
 const isL14 = ref(false);
+const wasAssetSent = ref(false);
+
+const handleModalClose = () => {
+  emit('close', wasAssetSent.value);
+};
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
-  console.log(props.tokenId);
 
   let chainID = await web3.eth.getChainId();
   if (chainID === 22) {
@@ -36,7 +40,6 @@ onMounted(async () => {
     console.log();
     isL16.value = true;
   }
-});
 
 async function sendAsset() {
   let recipientBytecode = await web3.eth.getCode(assetRecipient.value);
@@ -64,6 +67,9 @@ async function sendAsset() {
     } else if (props.isLsp8) {
       await sendLSP8Token(account, props.assetAddress);
     }
+
+    wasAssetSent.value = true;
+    emit('tokens-sent');
   } catch (err) {
     // It can fail if the recipient is not a UP (cf. force option)
     isLoading.value = false;
@@ -113,7 +119,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
 </script>
 
 <template>
-  <div class="modal" @click="$emit('close')">
+  <div class="modal" @click="handleModalClose">
     <div class="modal-content" @click.stop="">
       <div class="container">
         <h2 style="margin-bottom: 0px">Send {{ props.assetName }}</h2>
@@ -165,7 +171,7 @@ async function sendLSP8Token(accountAddress, assetAddress) {
           >
           <small v-else>{{ txHash }}</small>
           <br /><br />
-          <input class="button-primary" type="button" value="Close" @click="$emit('close')" />
+          <input class="button-primary" type="button" value="Close" @click="handleModalClose" />
         </p>
       </div>
     </div>

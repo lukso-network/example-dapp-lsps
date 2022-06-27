@@ -8,6 +8,8 @@ import { LSPFactory } from '@lukso/lsp-factory.js';
 import ERC725js from '@erc725/erc725.js';
 import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets.json'; // https://docs.lukso.tech/tools/erc725js/schemas
 
+import LSP7Mintable_0_5_0 from '../contracts/LSP7Mintable_0_5_0.json';
+
 import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
 </script>
 
@@ -45,9 +47,6 @@ export default {
         assets: [],
       };
 
-      // INITIATE the LSPFactory
-      const factory = new LSPFactory(web3.currentProvider);
-
       // show the deploying status...
       this.deployEvents = [];
       this.deploying = true;
@@ -57,6 +56,13 @@ export default {
       // https://docs.lukso.tech/tools/lsp-factoryjs/classes/lsp7-digital-asset
 
       let contracts;
+
+      // l14 relayer uses smart contracts v0.5.0
+      const chainId = await web3.eth.getChainId();
+      const version = chainId === 22 ? LSP7Mintable_0_5_0.bytecode : null;
+
+      // INITIATE the LSPFactory
+      const factory = new LSPFactory(web3.currentProvider, { chainId });
 
       try {
         contracts = await factory.LSP7DigitalAsset.deploy(
@@ -69,6 +75,9 @@ export default {
             digitalAssetMetadata: LSP4MetaData,
           },
           {
+            LSP7DigitalAsset: {
+              version,
+            },
             ipfsGateway: IPFS_GATEWAY_API_BASE_URL,
             onDeployEvents: {
               next: (deploymentEvent) => {
@@ -80,7 +89,10 @@ export default {
                 this.deploying = false;
                 this.error = error.message;
               },
-              complete: async (contracts) => {},
+              complete: async (contracts) => {
+                console.log('Deployment Complete');
+                console.log(contracts.LSP7DigitalAsset);
+              },
             },
           }
         );

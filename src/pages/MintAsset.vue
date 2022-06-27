@@ -58,8 +58,13 @@ async function onSubmit() {
     // If account is EOA, add minted item to localStorage
     if (bytecode === '0x') {
       let LSP5ReceivedAssets = JSON.parse(localStorage.getItem('receivedAssets'));
-      LSP5ReceivedAssets.value.push(route.params.address);
-      localStorage.setItem('receivedAssets', JSON.stringify(LSP5ReceivedAssets));
+
+      // Is not featured in localStorage already
+      if (LSP5ReceivedAssets.value.indexOf(route.params.address) === -1) {
+        // add new asset and write them back to localStorage
+        LSP5ReceivedAssets.value.push(route.params.address);
+        localStorage.setItem('receivedAssets', JSON.stringify(LSP5ReceivedAssets));
+      }
     }
   } catch (err) {
     error.value = err.message;
