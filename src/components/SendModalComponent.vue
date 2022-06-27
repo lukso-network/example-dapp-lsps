@@ -22,6 +22,8 @@ const isLoading = ref(false);
 const txHash = ref('');
 const forceParameter = ref(false);
 const isRecepientEOA = ref(false);
+const isL16 = ref(false);
+const isL14 = ref(false);
 const wasAssetSent = ref(false);
 
 const handleModalClose = () => {
@@ -30,7 +32,14 @@ const handleModalClose = () => {
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
-});
+
+  let chainID = await web3.eth.getChainId();
+  if (chainID === 22) {
+    isL14.value = true;
+  } else if (chainID === 2828) {
+    console.log();
+    isL16.value = true;
+  }
 
 async function sendAsset() {
   let recipientBytecode = await web3.eth.getCode(assetRecipient.value);
@@ -114,9 +123,14 @@ async function sendLSP8Token(accountAddress, assetAddress) {
     <div class="modal-content" @click.stop="">
       <div class="container">
         <h2 style="margin-bottom: 0px">Send {{ props.assetName }}</h2>
-        <small
+        <small v-if="isL14"
           ><a :href="`https://blockscout.com/lukso/l14/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
         >
+        <small v-else-if="isL16"
+          ><a :href="`https://explorer.execution.l16.lukso.network/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
+        >
+        <small v-else>{{ props.assetAddress }}</small>
+
         <h2></h2>
 
         <form @submit.prevent="sendAsset">
@@ -149,9 +163,14 @@ async function sendLSP8Token(accountAddress, assetAddress) {
         <p v-if="isLoading">Sending asset...</p>
         <p v-if="txHash">
           ✅ Success: Transaction Hash:
-          <small
+          <small v-if="isL14"
             ><a :href="`https://blockscout.com/lukso/l14/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
-          ><br /><br />
+          >
+          <small v-else-if="isL16"
+            ><a :href="`https://explorer.execution.l16.lukso.network/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
+          >
+          <small v-else>{{ txHash }}</small>
+          <br /><br />
           <input class="button-primary" type="button" value="Close" @click="handleModalClose" />
         </p>
       </div>
