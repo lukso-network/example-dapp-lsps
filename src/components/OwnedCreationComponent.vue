@@ -32,6 +32,15 @@ const emit = defineEmits(['remove-asset']);
 
 async function handleTokensSent() {
   await refreshToken();
+  if (!parseInt(balanceOf.value) && localStorage.getItem('receivedAssets')) {
+    const LSP5ReceivedAssets = JSON.parse(localStorage.getItem('receivedAssets'));
+
+    LSP5ReceivedAssets.value = LSP5ReceivedAssets.value.filter(function (assetAddress) {
+      return assetAddress !== props.address;
+    });
+
+    localStorage.setItem('receivedAssets', JSON.stringify(LSP5ReceivedAssets));
+  }
 }
 
 const handleModalClose = () => {
