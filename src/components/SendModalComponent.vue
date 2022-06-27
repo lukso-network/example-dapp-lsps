@@ -22,8 +22,8 @@ const isLoading = ref(false);
 const txHash = ref('');
 const forceParameter = ref(false);
 const isRecepientEOA = ref(false);
-const isl16 = ref(false);
-const isl14 = ref(false);
+const isL16 = ref(false);
+const isL14 = ref(false);
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
@@ -31,10 +31,10 @@ onMounted(async () => {
 
   let chainID = await web3.eth.getChainId();
   if (chainID === 22) {
-    isl14.value = true;
+    isL14.value = true;
   } else if (chainID === 2828) {
     console.log();
-    isl16.value = true;
+    isL16.value = true;
   }
 });
 
@@ -117,10 +117,10 @@ async function sendLSP8Token(accountAddress, assetAddress) {
     <div class="modal-content" @click.stop="">
       <div class="container">
         <h2 style="margin-bottom: 0px">Send {{ props.assetName }}</h2>
-        <small v-if="isl14"
+        <small v-if="isL14"
           ><a :href="`https://blockscout.com/lukso/l14/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
         >
-        <small v-else-if="isl16"
+        <small v-else-if="isL16"
           ><a :href="`https://explorer.execution.l16.lukso.network/address/${props.assetAddress}`" target="_blank">{{ props.assetAddress }}</a></small
         >
         <small v-else>{{ props.assetAddress }}</small>
@@ -157,10 +157,10 @@ async function sendLSP8Token(accountAddress, assetAddress) {
         <p v-if="isLoading">Sending asset...</p>
         <p v-if="txHash">
           ✅ Success: Transaction Hash:
-          <small v-if="isl14"
+          <small v-if="isL14"
             ><a :href="`https://blockscout.com/lukso/l14/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
           >
-          <small v-else-if="isl16"
+          <small v-else-if="isL16"
             ><a :href="`https://explorer.execution.l16.lukso.network/tx/${txHash}`" target="_blank">{{ txHash }}</a></small
           >
           <small v-else>{{ txHash }}</small>
