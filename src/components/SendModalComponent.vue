@@ -57,6 +57,16 @@ async function sendAsset() {
       await sendLSP7Token(account, props.assetAddress);
     } else if (props.isLsp8) {
       await sendLSP8Token(account, props.assetAddress);
+
+      if (localStorage.getItem('receivedAssets')) {
+        const LSP5ReceivedAssets = JSON.parse(localStorage.getItem('receivedAssets'));
+
+        LSP5ReceivedAssets.value = LSP5ReceivedAssets.value.filter(function (assetAddress) {
+          return assetAddress !== props.assetAddress;
+        });
+
+        localStorage.setItem('receivedAssets', JSON.stringify(LSP5ReceivedAssets));
+      }
     }
 
     wasAssetSent.value = true;

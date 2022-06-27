@@ -149,7 +149,7 @@ async function onSubmit(e) {
 
   // Show EOA local storage warning
   if (bytecode === '0x') {
-    this.isEOA = true;
+    isEOA.value = true;
   }
 
   isSuccess.value = true;
