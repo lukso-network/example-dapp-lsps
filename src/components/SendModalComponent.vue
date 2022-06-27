@@ -37,9 +37,9 @@ onMounted(async () => {
   if (chainID === 22) {
     isL14.value = true;
   } else if (chainID === 2828) {
-    console.log();
     isL16.value = true;
   }
+});
 
 async function sendAsset() {
   let recipientBytecode = await web3.eth.getCode(assetRecipient.value);
