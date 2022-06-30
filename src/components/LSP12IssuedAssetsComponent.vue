@@ -10,7 +10,7 @@ import CreationComponentVue from './CreationComponent.vue';
 const addresses = ref([]);
 const isLoading = ref(false);
 
-onMounted(async () => { 
+onMounted(async () => {
   isLoading.value = true;
   const accounts = await web3.eth.getAccounts();
   // TODO: make sure accounts is not empty!

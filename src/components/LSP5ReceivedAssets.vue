@@ -29,14 +29,18 @@ async function handleRemoveAsset({ tokenId, assetAddress }) {
   });
   receivedTokens.value = updatedRecievedTokens;
 
-  // Update received assets 
-  receivedAssets.value = updatedRecievedTokens.reduce(function (acc, token) {
-    if (!acc.includes(token.assetAddress)) {
-      acc.push(token.assetAddress);
-    }
+  // Update received assets
+  try {
+    receivedAssets.value = updatedRecievedTokens.reduce(function (acc, token) {
+      if (!acc.includes(token.assetAddress)) {
+        acc.push(token.assetAddress);
+      }
 
-    return acc;
-  }, []);
+      return acc;
+    }, []);
+  } catch (err) {
+    console.warn(err);
+  }
 
   isLoading.value = false;
 }
