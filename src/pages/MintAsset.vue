@@ -8,6 +8,7 @@ import LSP4DigitalAssetSchema from '@erc725/erc725.js/schemas/LSP4DigitalAsset.j
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7Mintable.json';
 
 import { BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
+import { addLuksoL14Testnet, addLuksoL16Testnet } from '../../swap-network';
 
 const route = useRoute();
 
@@ -19,8 +20,16 @@ const error = ref('');
 const isLoading = ref(false);
 const forceParameter = ref(false);
 const isMinterEOA = ref(false);
+const wrongNetwork = ref(false);
 
 async function onSubmit() {
+  // Check network
+  let chainID = await web3.eth.getChainId();
+  if (chainID !== 22 && chainID !== 2828) {
+    wrongNetwork.value = true;
+    return;
+  }
+
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
 
@@ -93,7 +102,9 @@ onMounted(async () => {
     <form @submit.prevent="onSubmit" class="left">
       <fieldset>
         <p class="warning" v-if="isMinterEOA">Your address is an EOA, please allow transfer to EOA.</p>
-
+        <p v-if="wrongNetwork" class="warning">
+          Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16 </a>to mint this asset.
+        </p>
         <label for="amount">Amount</label>
         <input type="number" v-model="mintAmount" placeholder="1" id="amount" required />
         <div>

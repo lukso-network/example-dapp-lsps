@@ -5,6 +5,7 @@ import { isAddress } from 'web3-utils';
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 import ProfilePreviewComponent from './ProfilePreviewComponent.vue';
 import LSP8IdentifiableDigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP8IdentifiableDigitalAsset.json';
+import { addLuksoL14Testnet, addLuksoL16Testnet } from '../../swap-network';
 
 const props = defineProps({
   assetAddress: String,
@@ -25,6 +26,7 @@ const isRecepientEOA = ref(false);
 const isL16 = ref(false);
 const isL14 = ref(false);
 const wasAssetSent = ref(false);
+const wrongNetwork = ref(false);
 
 const handleModalClose = () => {
   emit('close', wasAssetSent.value);
@@ -33,6 +35,7 @@ const handleModalClose = () => {
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
 
+  // Default links that show up
   let chainID = await web3.eth.getChainId();
   if (chainID === 22) {
     isL14.value = true;
@@ -42,6 +45,21 @@ onMounted(async () => {
 });
 
 async function sendAsset() {
+  // Check network and update previous values
+  let chainID = await web3.eth.getChainId();
+  if (chainID === 22) {
+    isL14.value = true;
+    isL16.value = false;
+  } else if (chainID === 2828) {
+    isL16.value = true;
+    isL14.value = false;
+  } else {
+    wrongNetwork.value = true;
+    isL14.value = false;
+    isL16.value = false;
+    return;
+  }
+
   let recipientBytecode = await web3.eth.getCode(assetRecipient.value);
 
   if (!isAddress(assetRecipient.value)) {
@@ -159,6 +177,10 @@ async function sendLSP8Token(accountAddress, assetAddress) {
               >
                 <p class="warning" v-if="isRecepientEOA">Your recipient is an EOA, please allow transfer to EOA.</p>
               </span>
+              <p v-if="wrongNetwork" class="warning">
+                Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16</a> to send this
+                token.
+              </p>
             </div>
 
             <input style="position: absolute; margin: 5px 0px 0px -100px" type="checkbox" v-model="forceParameter" id="force" value="false" />

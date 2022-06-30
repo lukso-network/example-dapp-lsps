@@ -11,6 +11,7 @@ import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets
 import LSP7Mintable_0_5_0 from '../contracts/LSP7Mintable_0_5_0.json';
 
 import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
+import { addLuksoL14Testnet, addLuksoL16Testnet } from '../../swap-network';
 </script>
 
 <script>
@@ -22,6 +23,7 @@ export default {
       isEOA: false,
       deployEvents: [],
       error: false,
+      wrongNetwork: false,
     };
   },
 
@@ -34,6 +36,13 @@ export default {
 
   methods: {
     async onSubmit(e) {
+      // Check network
+      let chainID = await web3.eth.getChainId();
+      if (chainID !== 22 && chainID !== 2828) {
+        this.wrongNetwork = true;
+        return;
+      }
+
       // GET the address from the browser extension
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
@@ -190,7 +199,9 @@ export default {
     <br />
 
     <div v-if="isEOA" class="warning">The NFT has been deployed and configured correctly, but because of MetaMask, the asset can only be stored in the browser's local storage.</div>
-
+    <p v-if="wrongNetwork" class="warning">
+      Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16 </a>to create this token.
+    </p>
     <br />
     <br />
 

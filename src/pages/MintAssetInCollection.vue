@@ -9,6 +9,7 @@ import LSP8Mintable from '@lukso/lsp-smart-contracts/artifacts/LSP8Mintable.json
 
 import { BLOCKCHAIN_EXPLORER_BASE_URL, IPFS_GATEWAY_API_BASE_URL } from '../constants';
 import { LSP4DigitalAssetMetadata } from '@lukso/lsp-factory.js';
+import { addLuksoL14Testnet, addLuksoL16Testnet } from '../../swap-network';
 
 const route = useRoute();
 
@@ -24,8 +25,16 @@ const isLoading = ref(false);
 const isSuccess = ref(false);
 const forceParameter = ref(false);
 const isMinterEOA = ref(false);
+const wrongNetwork = ref(false);
 
 async function onSubmit(e) {
+  // Check network
+  let chainID = await web3.eth.getChainId();
+  if (chainID !== 22 && chainID !== 2828) {
+    wrongNetwork.value = true;
+    return;
+  }
+
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
 
@@ -150,7 +159,10 @@ onMounted(async () => {
     <form v-if="!isLoading && mintEvents.length === 0" @submit.prevent="onSubmit" class="left">
       <fieldset>
         <p class="warning" v-if="isMinterEOA">Your address is an EOA, please allow transfer to EOA.</p>
-
+        <p v-if="wrongNetwork" class="warning">
+          Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16 </a>to mint this asset in
+          a collection.
+        </p>
         <label for="tokenId">Token ID</label>
         <textarea placeholder="My Token" v-model="tokenId" id="tokenId" required maxlength="30"></textarea>
 
