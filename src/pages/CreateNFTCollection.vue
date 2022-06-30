@@ -14,12 +14,14 @@ import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets
 import LSP8Mintable_0_5_0 from '../contracts/LSP8Mintable_0_5_0.json';
 
 import { IPFS_GATEWAY_API_BASE_URL, IPFS_GATEWAY_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
+import { addLuksoL14Testnet, addLuksoL16Testnet, isLuksoNetwork } from '../../network';
 
 const deploying = ref(false);
 const error = ref(false);
 const isEOA = ref(false);
 const deployEvents = ref([]);
 const isSuccess = ref(false);
+const isWrongNetwork = ref(false);
 
 // Form fields
 const tokenName = ref('');
@@ -27,6 +29,18 @@ const tokenSymbol = ref('');
 const description = ref('');
 
 async function onSubmit(e) {
+  // Check network
+  try {
+    isWrongNetwork.value = await isLuksoNetwork();
+    if (isWrongNetwork.value) {
+      return;
+    }
+  } catch (err) {
+    console.warn(err);
+    error.value = err.message;
+    return;
+  }
+
   // show the deploying status...
   deployEvents.value = [];
   deploying.value = true;
@@ -47,7 +61,7 @@ async function onSubmit(e) {
   const chainId = await web3.eth.getChainId();
 
   // l14 relayer uses smart contracts v0.5.0
-  const version = chainId === 22 ? LSP8Mintable_0_5_0.bytecode : null;
+  const version = chainId === CHAIN_IDS.L14 ? LSP8Mintable_0_5_0.bytecode : null;
 
   // INITIATE the LSPFactory
   const factory = new LSPFactory(web3.currentProvider, { chainId });
@@ -170,7 +184,10 @@ async function onSubmit(e) {
     <br />
 
     <div v-if="isEOA" class="warning">The NFT Collection has been deployed and configured correctly, but because of MetaMask, the asset can only be stored in the browser's local storage.</div>
-
+    <p v-if="isWrongNetwork" class="warning">
+      Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16 </a>to create this NFT
+      collection.
+    </p>
     <br />
     <br />
 

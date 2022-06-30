@@ -5,6 +5,8 @@ import { isAddress } from 'web3-utils';
 import LSP7DigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP7DigitalAsset.json';
 import ProfilePreviewComponent from './ProfilePreviewComponent.vue';
 import LSP8IdentifiableDigitalAsset from '@lukso/lsp-smart-contracts/artifacts/LSP8IdentifiableDigitalAsset.json';
+import { addLuksoL14Testnet, addLuksoL16Testnet, isLuksoNetwork } from '../../network';
+import { CHAIN_IDS } from '@/constants';
 
 const props = defineProps({
   assetAddress: String,
@@ -25,6 +27,8 @@ const isRecepientEOA = ref(false);
 const isL16 = ref(false);
 const isL14 = ref(false);
 const wasAssetSent = ref(false);
+const isWrongNetwork = ref(false);
+const error = ref(false);
 
 const handleModalClose = () => {
   emit('close', wasAssetSent.value);
@@ -32,16 +36,45 @@ const handleModalClose = () => {
 
 onMounted(async () => {
   console.log('assetAddress', props.assetAddress);
-
-  let chainID = await web3.eth.getChainId();
-  if (chainID === 22) {
-    isL14.value = true;
-  } else if (chainID === 2828) {
-    isL16.value = true;
+  try {
+    // Default links that show up
+    let chainId = await web3.eth.getChainId();
+    if (chainId === CHAIN_IDS.L14) {
+      isL14.value = true;
+    } else if (chainId === CHAIN_IDS.L16) {
+      isL16.value = true;
+    }
+  } catch (err) {
+    console.warn(err);
   }
 });
 
 async function sendAsset() {
+  // Check network and update previous values
+
+  try {
+    let chainId = await web3.eth.getChainId();
+    switch (chainId) {
+      case CHAIN_IDS.L14:
+        isL14.value = true;
+        isL16.value = false;
+        break;
+      case CHAIN_IDS.L16:
+        isL16.value = true;
+        isL14.value = false;
+        break;
+      default:
+        isWrongNetwork.value = true;
+        isL14.value = false;
+        isL16.value = false;
+        return;
+    }
+  } catch (err) {
+    console.warn(err);
+    error.value = err.message;
+    return;
+  }
+
   let recipientBytecode = await web3.eth.getCode(assetRecipient.value);
 
   if (!isAddress(assetRecipient.value)) {
@@ -159,6 +192,13 @@ async function sendLSP8Token(accountAddress, assetAddress) {
               >
                 <p class="warning" v-if="isRecepientEOA">Your recipient is an EOA, please allow transfer to EOA.</p>
               </span>
+              <p v-if="isWrongNetwork" class="warning">
+                Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16</a> to send this
+                token.
+              </p>
+              <p class="warning" v-if="error">
+                {{ error }}
+              </p>
             </div>
 
             <input style="position: absolute; margin: 5px 0px 0px -100px" type="checkbox" v-model="forceParameter" id="force" value="false" />
