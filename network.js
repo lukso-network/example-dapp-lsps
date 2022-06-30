@@ -1,3 +1,5 @@
+import { BLOCK_EXPLORER_URLS, CHAIN_IDS, RPC_URLS } from './src/constants';
+
 export async function addLuksoL16Testnet() {
   try {
     // Open request to add custom network
@@ -5,20 +7,20 @@ export async function addLuksoL16Testnet() {
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: '0xB0C',
+          chainId: CHAIN_IDS.L16_HEX,
           chainName: 'LUKSO L16',
           nativeCurrency: {
             name: 'LUKSO',
             symbol: 'LYXt',
             decimals: 18,
           },
-          rpcUrls: ['https://rpc.l16.lukso.network'],
-          blockExplorerUrls: ['https://explorer.execution.l16.lukso.network'],
+          rpcUrls: [RPC_URLS.L16],
+          blockExplorerUrls: [BLOCK_EXPLORER_URLS.L16],
         },
       ],
     });
   } catch (err) {
-    // User denied access
+    console.error(err);
   }
 }
 
@@ -29,19 +31,32 @@ export async function addLuksoL14Testnet() {
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: '0x16',
+          chainId: CHAIN_IDS.L14_HEX,
           chainName: 'LUKSO L14',
           nativeCurrency: {
             name: 'LUKSO',
             symbol: 'LYXt',
             decimals: 18,
           },
-          rpcUrls: ['https://rpc.l14.lukso.network'],
-          blockExplorerUrls: ['https://blockscout.com/lukso/l14'],
+          rpcUrls: [RPC_URLS.L14],
+          blockExplorerUrls: [BLOCK_EXPLORER_URLS.L14],
         },
       ],
     });
   } catch (err) {
     // User denied access
+    console.error(err);
+  }
+}
+
+export async function isLuksoNetwork() {
+  try {
+    let chainId = await web3.eth.getChainId();
+    if (chainId !== CHAIN_IDS.L14 && chainId !== CHAIN_IDS.L16) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(err);
   }
 }

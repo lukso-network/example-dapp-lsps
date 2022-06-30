@@ -11,7 +11,7 @@ import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets
 import LSP7Mintable_0_5_0 from '../contracts/LSP7Mintable_0_5_0.json';
 
 import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
-import { addLuksoL14Testnet, addLuksoL16Testnet } from '../../swap-network';
+import { addLuksoL14Testnet, addLuksoL16Testnet, isLuksoNetwork } from '../../network';
 </script>
 
 <script>
@@ -23,7 +23,7 @@ export default {
       isEOA: false,
       deployEvents: [],
       error: false,
-      wrongNetwork: false,
+      isWrongNetwork: false,
     };
   },
 
@@ -37,9 +37,14 @@ export default {
   methods: {
     async onSubmit(e) {
       // Check network
-      let chainID = await web3.eth.getChainId();
-      if (chainID !== 22 && chainID !== 2828) {
-        this.wrongNetwork = true;
+      try {
+        this.isWrongNetwork = await isLuksoNetwork();
+        if (this.isWrongNetwork) {
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        this.error = err.message;
         return;
       }
 
@@ -68,7 +73,7 @@ export default {
 
       // l14 relayer uses smart contracts v0.5.0
       const chainId = await web3.eth.getChainId();
-      const version = chainId === 22 ? LSP7Mintable_0_5_0.bytecode : null;
+      const version = chainId === CHAIN_IDS.L14 ? LSP7Mintable_0_5_0.bytecode : null;
 
       // INITIATE the LSPFactory
       const factory = new LSPFactory(web3.currentProvider, { chainId });
@@ -199,7 +204,7 @@ export default {
     <br />
 
     <div v-if="isEOA" class="warning">The NFT has been deployed and configured correctly, but because of MetaMask, the asset can only be stored in the browser's local storage.</div>
-    <p v-if="wrongNetwork" class="warning">
+    <p v-if="isWrongNetwork" class="warning">
       Please switch your network to LUKSO <a style="cursor: pointer" @click="addLuksoL14Testnet()">L14</a> or <a style="cursor: pointer" @click="addLuksoL16Testnet()">L16 </a>to create this token.
     </p>
     <br />
