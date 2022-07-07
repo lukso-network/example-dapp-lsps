@@ -10,7 +10,7 @@ import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets
 
 import LSP7Mintable_0_5_0 from '../contracts/LSP7Mintable_0_5_0.json';
 
-import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL } from '../constants';
+import { IPFS_GATEWAY_BASE_URL, IPFS_GATEWAY_API_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL, CHAIN_IDS } from '../constants';
 import { addLuksoL14Testnet, addLuksoL16Testnet, isLuksoNetwork } from '../../network';
 </script>
 
