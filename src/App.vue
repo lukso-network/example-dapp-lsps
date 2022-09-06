@@ -76,7 +76,9 @@ export default {
     <main>
       <router-view />
     </main>
+    <footer> <a href="github.com/lukso-network/example-dapp-lsps">github.com/lukso-network/example-dapp-lsps</a></footer>
   </div>
+
 </template>
 
 <style lang="less">
