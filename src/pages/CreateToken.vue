@@ -1,5 +1,6 @@
 <script setup>
 import LSP0ERC725Account from '@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json'; // TODO change to LSP0ERC725Account
+import { INTERFACE_IDS } from '@lukso/lsp-smart-contracts';
 
 // https://docs.lukso.tech/tools/lsp-factoryjs/getting-started
 import { LSPFactory } from '@lukso/lsp-factory.js';
@@ -152,7 +153,7 @@ export default {
       }
 
       // https://docs.lukso.tech/standards/smart-contracts/interface-ids
-      const LSP7InterfaceId = '0xe33f65c3';
+      const LSP7InterfaceId = INTERFACE_IDS.LSP7DigitalAsset;
 
       const encodedErc725Data = erc725LSP12IssuedAssets.encodeData([
         {
