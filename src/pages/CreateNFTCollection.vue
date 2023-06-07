@@ -13,7 +13,7 @@ import LSP12IssuedAssetsSchema from '@erc725/erc725.js/schemas/LSP12IssuedAssets
 
 import LSP8Mintable_0_5_0 from '../contracts/LSP8Mintable_0_5_0.json';
 
-import { IPFS_GATEWAY_API_BASE_URL, IPFS_GATEWAY_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL, CHAIN_IDS } from '../constants';
+import { IPFS_GATEWAY_API_BASE_URL, IPFS_GATEWAY_BASE_URL, BLOCKCHAIN_EXPLORER_BASE_URL, CHAIN_IDS, INTERFACE_IDS } from '../constants';
 import { addLuksoL14Testnet, addLuksoL16Testnet, isLuksoNetwork } from '../../network';
 
 const deploying = ref(false);
@@ -135,7 +135,7 @@ async function onSubmit(e) {
   }
 
   // https://docs.lukso.tech/standards/smart-contracts/interface-ids
-  const LSP8InterfaceId = '0x49399145';
+  const LSP8InterfaceId = INTERFACE_IDS.LSP8IdentifiableDigitalAsset;
 
   const encodedErc725Data = erc725LSP12IssuedAssets.encodeData([
     {
